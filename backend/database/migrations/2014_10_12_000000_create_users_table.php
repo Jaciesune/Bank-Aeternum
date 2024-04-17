@@ -18,6 +18,11 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->string('phone')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->string('pesel')->nullable();
+            $table->string('gender')->nullable();
+            $table->timestamp('password_changed_at')->nullable();
         });
     }
 

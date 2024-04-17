@@ -1,7 +1,7 @@
 
 <?php
 
-use App\Http\Controllers\Auth\Models\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 test('a user can update its details', function () {

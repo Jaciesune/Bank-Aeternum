@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\Models\User;
+use App\Models\User;
 
 test('a user can fetch its own account details', function () {
     $user = User::factory()->create();

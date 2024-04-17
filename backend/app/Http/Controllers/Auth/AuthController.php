@@ -20,6 +20,10 @@ class AuthController extends Controller
             last_name: $request->input('last_name'),
             email: $request->input('email'),
             password: $request->input('password'),
+            phone: $request->input('phone'),
+            birth_date: $request->input('birth_date'),
+            pesel: $request->input('pesel'),
+            gender: $request->input('gender'),
         );
 
         return response()->json([

@@ -2,7 +2,7 @@
 
 namespace App\Actions\Users;
 
-use App\Http\Controllers\Auth\Models\User;
+use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 
@@ -63,19 +63,28 @@ class CreateUser
         string $last_name,
         string $email,
         string $password,
+        string $phone,
+        string $birth_date,
+        string $pesel,
+        string $gender,
     ): User {
-        do {
-            $clientId = mt_rand(100000, 999999); // TODO Move to separate class
-        } while (User::where('client_id', $clientId)->exists());
+
+        $client_id = mt_rand(100000, 999999);
+
 
         $salt = env('PASSWORD_SALT', '');
 
         $user = User::create([
-            'client_id'  => $clientId,
+            'client_id'  => $client_id,
             'first_name' => $first_name,
             'last_name'  => $last_name,
             'email'      => $email,
             'password'   => Hash::make($salt . $password),
+            'phone'      => $phone,
+            'birth_date' => $birth_date,
+            'pesel'      => $pesel,
+            'gender'     => $gender,
+
         ]);
 
         event(new Registered($user));

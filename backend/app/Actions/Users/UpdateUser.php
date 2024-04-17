@@ -2,7 +2,7 @@
 
 namespace App\Actions\Users;
 
-use App\Http\Controllers\Auth\Models\User;
+use App\Models\User;
 
 class UpdateUser
 {

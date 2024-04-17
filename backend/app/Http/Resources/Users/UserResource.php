@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Users;
 
-use App\Http\Controllers\Auth\Models\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
