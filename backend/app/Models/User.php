@@ -25,6 +25,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'birth_date',
         'pesel',
         'gender',
+        'address_id',
     ];
 
     protected $hidden = [
@@ -48,5 +49,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 }

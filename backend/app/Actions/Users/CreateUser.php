@@ -3,6 +3,7 @@
 namespace App\Actions\Users;
 
 use App\Models\User;
+use App\Models\Address;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 
@@ -67,12 +68,24 @@ class CreateUser
         string $birth_date,
         string $pesel,
         string $gender,
+        string $street,
+        string $city,
+        string $postal_code,
+        string $country,
+        string $house_number,
+        string $apartment_number
     ): User {
-
         $client_id = mt_rand(100000, 999999);
-
-
         $salt = env('PASSWORD_SALT', '');
+
+        $address = Address::create([
+            'street'     => $street,
+            'city'       => $city,
+            'postal_code' => $postal_code,
+            'country'    => $country,
+            'house_number' => $house_number,
+            'apartment_number' => $apartment_number,
+        ]);
 
         $user = User::create([
             'client_id'  => $client_id,
@@ -84,6 +97,7 @@ class CreateUser
             'birth_date' => $birth_date,
             'pesel'      => $pesel,
             'gender'     => $gender,
+            'address_id' => $address->id,
 
         ]);
 

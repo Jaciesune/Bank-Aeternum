@@ -28,7 +28,7 @@ class UserFactory extends Factory
             'gender'            => $this->faker->randomElement(['man', 'woman', 'other']),
             'created_at'        => now(),
             'password_changed_at' => now(),
-            'password'          => Hash::make($salt . 'password')
+            'password'          => Hash::make($salt . 'password'),
         ];
     }
 

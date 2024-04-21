@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Users\CreateUser;
+use App\Actions\Addresses\CreateAddress;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -24,6 +25,12 @@ class AuthController extends Controller
             birth_date: $request->input('birth_date'),
             pesel: $request->input('pesel'),
             gender: $request->input('gender'),
+            street: $request->input('street'),
+            city: $request->input('city'),
+            postal_code: $request->input('postal_code'),
+            country: $request->input('country'),
+            house_number: $request->input('house_number'),
+            apartment_number: $request->input('apartment_number'),
         );
 
         return response()->json([

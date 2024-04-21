@@ -44,6 +44,7 @@ type FormValues = {
   password_confirmation: string
   street: string
   house_number: number
+  apartment_number: number
   postal_code: string
   city: string
   country: string
@@ -63,6 +64,7 @@ export default function RegisterForm() {
     password_confirmation,
     street,
     house_number,
+    apartment_number,
     postal_code,
     city,
     country,
@@ -83,6 +85,7 @@ export default function RegisterForm() {
           password_confirmation,
           street,
           house_number,
+          apartment_number,
           postal_code,
           city,
           country,
@@ -281,21 +284,39 @@ export default function RegisterForm() {
             )}
           />
 
-          {/* House number */}
-          <FormField
-            control={form.control}
-            name="house_number"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Numer domu</FormLabel>
-                <FormControl>
-                  <Input placeholder="420" {...field} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-4">
+            {/* House number */}
+            <FormField
+              control={form.control}
+              name="house_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Numer domu</FormLabel>
+                  <FormControl>
+                    <Input placeholder="420" {...field} />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Apartment number */}
+            <FormField
+              control={form.control}
+              name="apartment_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Numer mieszkania</FormLabel>
+                  <FormControl>
+                    <Input placeholder="420" {...field} />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           {/* Phone number */}
           <FormField

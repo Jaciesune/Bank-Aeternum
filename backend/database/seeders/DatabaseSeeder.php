@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -11,6 +12,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        $adminAddress = Address::factory()->create();
         User::factory()->create([
             'first_name' => 'Developer',
             'last_name' => 'Example',
@@ -23,7 +25,15 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'password_changed_at' => now(),
             'password' => bcrypt(env('PASSWORD_SALT', '') . 'password'),
+            'address_id' => $adminAddress->id,
         ]);
-        User::factory()->count(5)->create();
+
+        $addresses = Address::factory()->count(5)->create();
+        foreach ($addresses as $address) {
+            error_log($address);
+            User::factory()->create([
+                'address_id' => $address->id,
+            ]);
+        }
     }
 }

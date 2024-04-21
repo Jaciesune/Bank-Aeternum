@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class ListUsers extends Command
 {
-    protected $signature = 'user:list';
+    protected $signature = 'users:list';
 
     protected $description = 'List all users';
 
@@ -16,7 +16,7 @@ class ListUsers extends Command
         $users = User::all();
 
         $this->table(
-            ['ID', 'CID', 'Full Name', 'Email', 'Email Verified At'],
+            ['ID', 'CID', 'Full Name', 'Email', 'Email Verified At', 'Address Foreign Key'],
             $users->map(function (User $user) {
                 return [
                     $user->id,
@@ -24,6 +24,7 @@ class ListUsers extends Command
                     "{$user->first_name} {$user->last_name}",
                     $user->email,
                     $user->email_verified_at,
+                    $user->address_id,
                 ];
             })
         );

@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class ListUserAll extends Command
 {
-    protected $signature = 'user:listall';
+    protected $signature = 'users:listall';
 
     protected $description = 'List all from users';
 

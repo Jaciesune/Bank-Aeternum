@@ -18,6 +18,12 @@ class RegisterRequest extends FormRequest
             'birth_date' => ['nullable', 'date'],
             'pesel'    => ['nullable', 'string', 'max:255'],
             'gender'   => ['nullable', 'string', 'max:255'],
+            'street'   => ['nullable', 'string', 'max:255'],
+            'city'     => ['nullable', 'string', 'max:255'],
+            'postal_code' => ['nullable', 'string', 'max:255'],
+            'country'  => ['nullable', 'string', 'max:255'],
+            'house_number' => ['nullable', 'string', 'max:255'],
+            'apartment_number' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
