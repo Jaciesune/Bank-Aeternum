@@ -56,11 +56,6 @@ const accountComponents: Component[] = [
     href: "/dashboard/settings",
     description: "Zarządzaj ustawieniami swojego konta.",
   },
-  {
-    title: "Wyloguj",
-    href: "/api/auth/signout",
-    description: "Wyloguj się z konta.",
-  },
 ]
 
 export default function UserNavigation() {
@@ -103,7 +98,7 @@ export default function UserNavigation() {
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/api/auth/signout" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Wyloguj
             </NavigationMenuLink>
