@@ -10,6 +10,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // User
             'first_name' => ['required', 'string', 'max:255'],
             'last_name'  => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -18,6 +19,7 @@ class RegisterRequest extends FormRequest
             'birth_date' => ['nullable', 'date'],
             'pesel'    => ['nullable', 'string', 'max:255'],
             'gender'   => ['nullable', 'string', 'max:255'],
+            // Address
             'street'   => ['nullable', 'string', 'max:255'],
             'city'     => ['nullable', 'string', 'max:255'],
             'postal_code' => ['nullable', 'string', 'max:255'],

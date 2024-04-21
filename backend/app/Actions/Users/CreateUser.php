@@ -68,24 +68,10 @@ class CreateUser
         string $birth_date,
         string $pesel,
         string $gender,
-        string $street,
-        string $city,
-        string $postal_code,
-        string $country,
-        string $house_number,
-        string $apartment_number
+        string $address_id,
     ): User {
         $client_id = mt_rand(100000, 999999);
         $salt = env('PASSWORD_SALT', '');
-
-        $address = Address::create([
-            'street'     => $street,
-            'city'       => $city,
-            'postal_code' => $postal_code,
-            'country'    => $country,
-            'house_number' => $house_number,
-            'apartment_number' => $apartment_number,
-        ]);
 
         $user = User::create([
             'client_id'  => $client_id,
@@ -97,8 +83,7 @@ class CreateUser
             'birth_date' => $birth_date,
             'pesel'      => $pesel,
             'gender'     => $gender,
-            'address_id' => $address->id,
-
+            'address_id' => $address_id,
         ]);
 
         event(new Registered($user));

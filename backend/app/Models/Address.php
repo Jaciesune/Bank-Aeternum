@@ -23,7 +23,7 @@ class Address extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function User()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -32,5 +32,4 @@ class Address extends Model
     {
         return "{$this->street} {$this->house_number}" . ($this->apartment_number ? "/{$this->apartment_number}" : '') . ", {$this->postal_code} {$this->city}, {$this->country}";
     }
-
 }

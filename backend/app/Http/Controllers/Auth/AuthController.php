@@ -2,21 +2,36 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Actions\Users\CreateUser;
-use App\Actions\Addresses\CreateAddress;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Resources\Users\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\Users\UserResource;
+use App\Http\Controllers\Controller;
+
+use App\Actions\Users\CreateUser;
+use App\Actions\Addresses\CreateAddress;
+use App\Actions\Accounts\CreateAccount;
+use App\Actions\AccountUser\CreateAccountUser;
+
+use App\Services\AccountNumberGenerator;
+
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request, CreateUser $createUser): JsonResponse
+    public function register(RegisterRequest $request, CreateUser $createUser, CreateAddress $createAddress, CreateAccount $createAccount, CreateAccountUser $createAccountUser): JsonResponse
     {
-        $createUser(
+        $address = $createAddress(
+            street: $request->input('street'),
+            city: $request->input('city'),
+            postal_code: $request->input('postal_code'),
+            country: $request->input('country'),
+            house_number: $request->input('house_number'),
+            apartment_number: $request->input('apartment_number'),
+        );
+
+        $user = $createUser(
             first_name: $request->input('first_name'),
             last_name: $request->input('last_name'),
             email: $request->input('email'),
@@ -25,12 +40,20 @@ class AuthController extends Controller
             birth_date: $request->input('birth_date'),
             pesel: $request->input('pesel'),
             gender: $request->input('gender'),
-            street: $request->input('street'),
-            city: $request->input('city'),
-            postal_code: $request->input('postal_code'),
-            country: $request->input('country'),
-            house_number: $request->input('house_number'),
-            apartment_number: $request->input('apartment_number'),
+            address_id: $address->id,
+        );
+
+        $account_number = AccountNumberGenerator::generate();
+        $account = $createAccount(
+            name: "Moje Konto",
+            account_number: $account_number,
+            balance: 0,
+            currency: 'PLN',
+        );
+
+        $createAccountUser(
+            account_id: $account->id,
+            user_id: $user->id,
         );
 
         return response()->json([

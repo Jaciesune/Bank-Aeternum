@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Address;
 use Illuminate\Console\Command;
 
-class ListAddressess extends Command
+class ListAddresses extends Command
 {
     protected $signature = 'addresses:list';
 
