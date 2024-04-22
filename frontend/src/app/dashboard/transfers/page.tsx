@@ -5,12 +5,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DomesticTransferForm } from "@/components/forms/transfers/domestic-transfer-form"
 import { ForeignTransferForm } from "@/components/forms/transfers/foreign-transfer-form"
 import { OwnTransferForm } from "@/components/forms/transfers/own-transfer-form"
-import { TaxTransferForm } from "@/components/forms/transfers/tax-transfer-form"
+
+import { TaxTransfers } from "./tax-transfers"
 
 const tabs = [
   { id: "domestic", label: "Krajowy", form: <DomesticTransferForm /> },
   { id: "own", label: "Własny", form: <OwnTransferForm /> },
-  { id: "tax", label: "Podatkowy", form: <TaxTransferForm /> },
+  { id: "tax", label: "Podatkowy", form: <TaxTransfers /> },
   { id: "foreign", label: "Zagraniczny", form: <ForeignTransferForm /> },
 ]
 

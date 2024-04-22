@@ -21,11 +21,13 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 type FormValues = {
@@ -39,15 +41,15 @@ type FormValues = {
   type_of_transfer: string
 }
 
-export function TaxTransferForm() {
+export function TicketTransferForm() {
   const form = useForm<FormValues>()
 
-  async function onSubmit({  }: FormValues) {
+  async function onSubmit({}: FormValues) {
     try {
       const response = await fetchClient({
         method: "POST",
         url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/forgot-password",
-        body: JSON.stringify({  }),
+        body: JSON.stringify({}),
       })
 
       if (!response.ok) {
@@ -86,7 +88,7 @@ export function TaxTransferForm() {
               <FormItem>
                 <FormLabel>Symbol Formularza</FormLabel>
                 <FormControl>
-                  <Input placeholder="PIT" {...field} />
+                  <Input placeholder="Mandaty" {...field} />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -178,7 +180,7 @@ export function TaxTransferForm() {
               control={form.control}
               name="date"
               render={({ field }) => (
-                <FormItem className="pt-2.5 flex flex-col">
+                <FormItem className="flex flex-col pt-2.5">
                   <FormLabel>Data przelewu</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -215,7 +217,7 @@ export function TaxTransferForm() {
               )}
             />
           </div>
-          
+
           {/* Type of transfer */}
           <FormField
             control={form.control}
@@ -224,7 +226,16 @@ export function TaxTransferForm() {
               <FormItem>
                 <FormLabel>Typ przelewu</FormLabel>
                 <FormControl>
-                  <Input placeholder="Typ przelewu" {...field} />
+                  <RadioGroup defaultValue="option-one">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-one" id="option-one" />
+                      <Label htmlFor="option-one">Standardowy</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-two" />
+                      <Label htmlFor="option-two">Natychmiastowy</Label>
+                    </div>
+                  </RadioGroup>
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
