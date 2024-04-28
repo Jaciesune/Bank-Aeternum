@@ -39,9 +39,9 @@ const components: Component[] = [
     description: "Zarządzaj swoimi przelewami.",
   },
   {
-    title: "Karty",
-    href: "/dashboard/cards",
-    description: "Zarządzaj swoimi kartami płatniczymi.",
+    title: "Kredyty",
+    href: "/dashboard/loans",
+    description: "Zarządzaj swoimi kredytami.",
   },
 ]
 

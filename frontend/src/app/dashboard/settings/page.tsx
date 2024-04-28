@@ -1,24 +1,100 @@
-import { getCurrentUser } from "@/lib/session"
+"use client"
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import UpdateUserForm from "@/components/forms/settings/update-user-info-form";
+import { ChangePasswordForm } from "@/components/forms/settings/change-password-form";
+import { User } from "next-auth/core/types";
 
-import { ChangePasswordForm } from "@/components/forms/change-password-form"
-import UpdateUserForm from "@/components/forms/update-user-form"
-
-export default async function Page() {
-  const user = await getCurrentUser()
+export default function Page() {
+  const [content, setContent] = useState("ProfileAndData"); // Domyślna zawartość
+  const { data: session } = useSession(); // Pobranie sesji użytkownika
+  const handleLinkClick = (newContent: string) => {
+    setContent(newContent); // Ustawienie nowej zawartości po kliknięciu na link
+  };
 
   return (
-    <div>
-      <h1>Settings</h1>
+    <div className="container mx-auto flex">
+      {/* Menu po lewej stronie */}
+      <nav className="w-1/3">
+        <div className="mb-8">
+          <h1 className="text-3xl font-semibold">Ustawienia</h1>
+        </div>
+        <ul className="grid gap-4 text-sm text-muted-foreground">
+          <li>
+            <button onClick={() => handleLinkClick("ProfileAndData")}>
+              Profil i Dane
+            </button>
+          </li>
+          <li>
+            <button onClick={() => handleLinkClick("AgreementManagement")}>
+              Zarządzanie zgodami
+            </button>
+          </li>
+          <li>
+            <button onClick={() => handleLinkClick("CorrespondenceAndNotices")}>
+              Korespondencja i powiadomienia
+            </button>
+          </li>
+          <li>
+            <button onClick={() => handleLinkClick("PaymentLimits")}>
+              Limity płatności
+            </button>
+          </li>
+          <li>
+            <button onClick={() => handleLinkClick("AccessAndSecurity")}>
+              Dostęp i bezpieczeństwo
+            </button>
+          </li>
+        </ul>
+      </nav>
 
+      {/* Zawartość po prawej stronie */}
+      <main className="w-2/3">
+        <div className="mt-8">
+          {/* Wyświetlanie zawartości zależnie od wybranej opcji */}
+          {content === "ProfileAndData" && <ProfileAndDataContent user={session?.user} />}
+          {content === "AgreementManagement" && <AgreementContent />}
+          {content === "CorrespondenceAndNotices" && <CorrespondenceAndNoticesContent />}
+          {content === "PaymentLimits" && <PaymentLimitsContent />}
+          {content === "AccessAndSecurity" && <AccessAndSecurityContent />}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+// Komponenty zawartości dla różnych opcji
+
+function ProfileAndDataContent({ user }: { user: User | null | undefined }) {
+  return (
+    <div>
       <section>
-        <h2>Update user</h2>
-        <UpdateUserForm user={user} />
+        <h2>Zmień dane użytkownika</h2>
+        {user && <UpdateUserForm user={user} />}
       </section>
 
       <section>
-        <h2>Change password</h2>
-        <ChangePasswordForm />
+        <h2>Zmień hasło</h2>
+        {user && <ChangePasswordForm />}
       </section>
     </div>
-  )
+  );
 }
+
+
+function AgreementContent() {
+  return <div>Zarządzanie zgodami</div>;
+}
+
+function CorrespondenceAndNoticesContent() {
+  return <div>Korespondencja i powiadomienia</div>;
+}
+
+function PaymentLimitsContent() {
+  return <div>Limity płatności</div>;
+}
+
+function AccessAndSecurityContent() {
+  return <div>Dostęp i bezpieczeństwo</div>;
+}
+

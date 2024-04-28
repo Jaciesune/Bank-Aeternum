@@ -59,7 +59,7 @@ export default function PasswordResetForm() {
         defaultValue={searchParams.get("email") || ""}
       />
 
-      <label htmlFor="password">Password</label>
+      <label htmlFor="password">Hasło</label>
       <Input
         id="password"
         name="password"
@@ -67,7 +67,7 @@ export default function PasswordResetForm() {
         defaultValue="password"
       />
 
-      <label htmlFor="password_confirmation">Password confirmation</label>
+      <label htmlFor="password_confirmation">Powtórz hasło</label>
       <Input
         id="password_confirmation"
         name="password_confirmation"
@@ -75,7 +75,7 @@ export default function PasswordResetForm() {
         defaultValue="password"
       />
 
-      <button type="submit">Reset password</button>
+      <button type="submit">Resetuj hasło</button>
     </form>
   )
 }

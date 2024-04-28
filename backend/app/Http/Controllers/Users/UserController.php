@@ -25,9 +25,11 @@ class UserController extends Controller
             first_name: $request->input('first_name'),
             last_name: $request->input('last_name'),
             email: $request->input('email'),
+            pesel: $request->input('pesel'),
+            phone: $request->input('phone'),
         );
 
-        return new UserResource(Auth::user()->fresh());
+        return new UserResource(Auth::user());
     }
 
     public function changePassword(ChangePasswordRequest $request, ChangePassword $changePassword): JsonResponse
