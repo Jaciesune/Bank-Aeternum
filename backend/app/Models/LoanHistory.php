@@ -10,7 +10,6 @@ class LoanHistory extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
         'loan_id',
         'status',
         'created_at',

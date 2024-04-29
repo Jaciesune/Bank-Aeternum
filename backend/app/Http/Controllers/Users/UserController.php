@@ -10,6 +10,7 @@ use App\Http\Requests\Users\UpdateUserRequest;
 use App\Http\Resources\Users\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -27,6 +28,10 @@ class UserController extends Controller
             email: $request->input('email'),
             pesel: $request->input('pesel'),
             phone: $request->input('phone'),
+            street: $request->input('street'),
+            city: $request->input('city'),
+            postal_code: $request->input('postal_code'),
+            country: $request->input('country'),
         );
 
         return new UserResource(Auth::user());

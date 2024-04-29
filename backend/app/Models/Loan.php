@@ -10,7 +10,6 @@ class Loan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
         'user_id',
         'amount',
         'duration',
@@ -28,10 +27,9 @@ class Loan extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-    
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
 }

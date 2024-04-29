@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -15,7 +16,8 @@ use App\Actions\Users\CreateUser;
 use App\Actions\Addresses\CreateAddress;
 use App\Actions\Accounts\CreateAccount;
 use App\Actions\AccountUser\CreateAccountUser;
-
+use App\Models\Address;
+use App\Http\Resources\Addressess\AddressResource;
 use App\Services\AccountNumberGenerator;
 
 class AuthController extends Controller
@@ -77,8 +79,11 @@ class AuthController extends Controller
             ], 401);
         }
 
+        $user = Auth::user();
+
+
         return response()->json([
-            'user'         => new UserResource(Auth::user()),
+            'user'         => new UserResource($user),
             'access_token' => $token,
         ]);
     }

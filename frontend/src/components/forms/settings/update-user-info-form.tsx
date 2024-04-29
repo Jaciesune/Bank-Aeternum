@@ -1,5 +1,6 @@
 "use client"
 
+import { error } from "console"
 import type { User } from "next-auth"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -16,7 +17,7 @@ interface UpdateUserFormProps {
 export default function UpdateUserForm({ user }: UpdateUserFormProps) {
   const router = useRouter()
   const { update } = useSession()
-
+  console.log(user)
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -62,12 +63,31 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
       <div className="-mx-3 mb-6 flex flex-wrap">
         <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
           <label
-            htmlFor="name"
+            htmlFor="first_name"
             className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
           >
-            Imię i Nazwisko
+            Imię
           </label>
-          <Input id="name" name="name" type="text" defaultValue={user?.name} />
+          <Input
+            id="first_name"
+            name="first_name"
+            type="text"
+            defaultValue={user?.first_name}
+          />
+        </div>
+        <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
+          <label
+            htmlFor="last_name"
+            className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
+          >
+            Nazwisko
+          </label>
+          <Input
+            id="last_name"
+            name="last_name"
+            type="text"
+            defaultValue={user?.last_name}
+          />
         </div>
         <div className="w-full px-3 md:w-1/2">
           <label
@@ -97,7 +117,7 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
             id="pesel"
             name="pesel"
             type="text"
-            defaultValue={"user?.pesel"}
+            defaultValue={user?.pesel}
           />
         </div>
         <div className="w-full px-3 md:w-1/2">
@@ -111,7 +131,7 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
             id="phone"
             name="phone"
             type="text"
-            defaultValue={"user?.phone"}
+            defaultValue={user?.phone}
           />
         </div>
       </div>
@@ -128,7 +148,7 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
             id="street"
             name="street"
             type="text"
-            defaultValue={"user?.address.street"}
+            defaultValue={user?.address.street}
           />
         </div>
         <div className="mb-6 w-full px-3 md:mb-0 md:w-1/3">
@@ -142,7 +162,7 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
             id="city"
             name="city"
             type="text"
-            defaultValue={"user?.address.city"}
+            defaultValue={user?.address?.city}
           />
         </div>
         <div className="mb-6 w-full px-3 md:mb-0 md:w-1/3">
@@ -156,7 +176,7 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
             id="postal_code"
             name="postal_code"
             type="text"
-            defaultValue={"user?.address.postal_code"}
+            defaultValue={user?.address.postal_code}
           />
         </div>
         <div className="mb-6 w-full px-3 md:mb-0 md:w-1/3">
@@ -170,7 +190,7 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
             id="country"
             name="country"
             type="text"
-            defaultValue={"user?.address.country"}
+            defaultValue={user?.address.country}
           />
         </div>
       </div>

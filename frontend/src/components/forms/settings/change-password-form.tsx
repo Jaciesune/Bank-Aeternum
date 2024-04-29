@@ -42,6 +42,12 @@ export function ChangePasswordForm() {
     }
   }
 
+  function clearValidity(e: any) {
+    const target = e.currentTarget
+    target.setCustomValidity("")
+    target.reportValidity()
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="password">Hasło</label>
@@ -49,7 +55,8 @@ export function ChangePasswordForm() {
         id="password"
         name="password"
         type="password"
-        defaultValue="password"
+        placeholder="password"
+        onChange={clearValidity}
       />
 
       <label htmlFor="password_confirmation">Powtórz hasło</label>
@@ -57,7 +64,8 @@ export function ChangePasswordForm() {
         id="password_confirmation"
         name="password_confirmation"
         type="password"
-        defaultValue="password"
+        placeholder="password"
+        onChange={clearValidity}
       />
 
       <Button className="w:5" type="submit">

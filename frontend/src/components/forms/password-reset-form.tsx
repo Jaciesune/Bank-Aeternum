@@ -64,7 +64,7 @@ export default function PasswordResetForm() {
         id="password"
         name="password"
         type="password"
-        defaultValue="password"
+        placeholder="password"
       />
 
       <label htmlFor="password_confirmation">Powtórz hasło</label>
@@ -72,7 +72,7 @@ export default function PasswordResetForm() {
         id="password_confirmation"
         name="password_confirmation"
         type="password"
-        defaultValue="password"
+        placeholder="password"
       />
 
       <button type="submit">Resetuj hasło</button>

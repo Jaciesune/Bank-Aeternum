@@ -1,5 +1,6 @@
 import "next-auth"
 import type { User } from "next-auth"
+import { Interface } from "readline"
 
 declare module "next-auth" {
   /**
@@ -11,9 +12,20 @@ declare module "next-auth" {
   }
 
   interface User {
-    name: string
+    first_name: string
+    last_name: string
     email: string
     email_verified_at: string
+    pesel: string
+    phone: string
+    address: Address
+  }
+
+  interface Address {
+    street: string
+    city: string
+    postal_code: string
+    country: string
   }
 }
 

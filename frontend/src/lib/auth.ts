@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 import fetchClient from "@/lib/fetch-client"
 import { jwt } from "@/lib/utils"
+import { error } from "console"
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -97,10 +98,13 @@ export const authOptions: NextAuthOptions = {
       }
 
       session.accessToken = token.accessToken
-      session.user.name = token.name || ""
+      session.user.first_name = token.first_name
+      session.user.last_name = token.last_name
       session.user.email = token.email || ""
       session.user.email_verified_at = token.email_verified_at
-
+      session.user.pesel = token.pesel
+      session.user.phone = token.phone
+      session.user.address = token.address
       return session
     },
   },
