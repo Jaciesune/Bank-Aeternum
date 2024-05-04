@@ -1,16 +1,15 @@
 "use client"
 
-import { useForm } from "react-hook-form"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+import { useForm } from "react-hook-form"
 
 import fetchClient from "@/lib/fetch-client"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import { CardContent, CardFooter } from "@/components/ui/card"
 import {
   Form,
@@ -22,6 +21,13 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 type FormValues = {
   from_account: string
@@ -37,12 +43,12 @@ type FormValues = {
 export function ForeignTransferForm() {
   const form = useForm<FormValues>()
 
-  async function onSubmit({  }: FormValues) {
+  async function onSubmit({}: FormValues) {
     try {
       const response = await fetchClient({
         method: "POST",
         url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/forgot-password",
-        body: JSON.stringify({  }),
+        body: JSON.stringify({}),
       })
 
       if (!response.ok) {
@@ -191,7 +197,7 @@ export function ForeignTransferForm() {
                         ) : (
                           <span>Wybierz datę</span>
                         )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        <CalendarIcon className="ml-auto size-4 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -221,7 +227,16 @@ export function ForeignTransferForm() {
               <FormItem>
                 <FormLabel>Typ przelewu</FormLabel>
                 <FormControl>
-                  <Input placeholder="Typ przelewu" {...field} />
+                  <RadioGroup defaultValue="option-one">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-one" id="option-one" />
+                      <Label htmlFor="option-one">Standardowy</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-two" />
+                      <Label htmlFor="option-two">Natychmiastowy</Label>
+                    </div>
+                  </RadioGroup>
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />

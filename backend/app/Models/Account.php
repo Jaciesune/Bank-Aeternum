@@ -20,14 +20,21 @@ class Account extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+    public function sent_transactions()
+    {
+        return $this->hasMany(Transaction::class, "from_account");
+    }
 
-    // public function type()
-    // {
-    //     return $this->belongsTo(AccountType::class);
-    // }
+    public function recieved_transactions()
+    {
+        return $this->hasMany(Transaction::class, "to_account");
+    }
 
-    // public function transactions()
-    // {
-    //     return $this->hasMany(Transaction::class);
-    // }
+    public function transactions()
+    {
+        $sent = $this->sent_transactions;
+        $recieved = $this->recieved_transactions;
+
+        return $sent->merge($recieved);
+    }
 }

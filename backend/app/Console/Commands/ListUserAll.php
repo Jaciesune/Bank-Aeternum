@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Console\Commands;
+namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -31,7 +31,7 @@ class ListUserAll extends Command
                     $user->created_at,
                     $user->password_changed_at,
                     $user->password,
-                    
+
                 ];
             })
         );

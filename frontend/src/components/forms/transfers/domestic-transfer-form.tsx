@@ -1,5 +1,6 @@
 "use client"
 
+import { Label } from "@radix-ui/react-label"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
@@ -26,6 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 type TypeOfTransfer = "standard" | "express"
 
@@ -196,7 +198,7 @@ export function DomesticTransferForm() {
                         ) : (
                           <span>Wybierz datę</span>
                         )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        <CalendarIcon className="ml-auto size-4 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -226,7 +228,16 @@ export function DomesticTransferForm() {
               <FormItem>
                 <FormLabel>Typ przelewu</FormLabel>
                 <FormControl>
-                  <Input placeholder="Typ przelewu" {...field} />
+                  <RadioGroup defaultValue="option-one">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-one" id="option-one" />
+                      <Label htmlFor="option-one">Standardowy</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-two" />
+                      <Label htmlFor="option-two">Natychmiastowy</Label>
+                    </div>
+                  </RadioGroup>
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />

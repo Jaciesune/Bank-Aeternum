@@ -11,13 +11,15 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\Users\UserResource;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Addressess\AddressResource;
 
 use App\Actions\Users\CreateUser;
 use App\Actions\Addresses\CreateAddress;
 use App\Actions\Accounts\CreateAccount;
 use App\Actions\AccountUser\CreateAccountUser;
+
 use App\Models\Address;
-use App\Http\Resources\Addressess\AddressResource;
+
 use App\Services\AccountNumberGenerator;
 
 class AuthController extends Controller

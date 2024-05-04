@@ -17,7 +17,7 @@ interface UpdateUserFormProps {
 export default function UpdateUserForm({ user }: UpdateUserFormProps) {
   const router = useRouter()
   const { update } = useSession()
-  console.log(user)
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 

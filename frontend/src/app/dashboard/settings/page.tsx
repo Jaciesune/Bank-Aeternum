@@ -1,16 +1,18 @@
 "use client"
-import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import UpdateUserForm from "@/components/forms/settings/update-user-info-form";
-import { ChangePasswordForm } from "@/components/forms/settings/change-password-form";
-import { User } from "next-auth/core/types";
+
+import { User } from "next-auth/core/types"
+import { useSession } from "next-auth/react"
+import React, { useEffect, useState } from "react"
+
+import { ChangePasswordForm } from "@/components/forms/settings/change-password-form"
+import UpdateUserForm from "@/components/forms/settings/update-user-info-form"
 
 export default function Page() {
-  const [content, setContent] = useState("ProfileAndData"); // Domyślna zawartość
-  const { data: session } = useSession(); // Pobranie sesji użytkownika
+  const [content, setContent] = useState("ProfileAndData") // Domyślna zawartość
+  const { data: session } = useSession() // Pobranie sesji użytkownika
   const handleLinkClick = (newContent: string) => {
-    setContent(newContent); // Ustawienie nowej zawartości po kliknięciu na link
-  };
+    setContent(newContent) // Ustawienie nowej zawartości po kliknięciu na link
+  }
 
   return (
     <div className="container mx-auto flex">
@@ -49,18 +51,22 @@ export default function Page() {
       </nav>
 
       {/* Zawartość po prawej stronie */}
-      <main className="w-2/3">
+      <section className="w-2/3">
         <div className="mt-8">
           {/* Wyświetlanie zawartości zależnie od wybranej opcji */}
-          {content === "ProfileAndData" && <ProfileAndDataContent user={session?.user} />}
+          {content === "ProfileAndData" && (
+            <ProfileAndDataContent user={session?.user} />
+          )}
           {content === "AgreementManagement" && <AgreementContent />}
-          {content === "CorrespondenceAndNotices" && <CorrespondenceAndNoticesContent />}
+          {content === "CorrespondenceAndNotices" && (
+            <CorrespondenceAndNoticesContent />
+          )}
           {content === "PaymentLimits" && <PaymentLimitsContent />}
           {content === "AccessAndSecurity" && <AccessAndSecurityContent />}
         </div>
-      </main>
+      </section>
     </div>
-  );
+  )
 }
 
 // Komponenty zawartości dla różnych opcji
@@ -78,23 +84,21 @@ function ProfileAndDataContent({ user }: { user: User | null | undefined }) {
         {user && <ChangePasswordForm />}
       </section>
     </div>
-  );
+  )
 }
 
-
 function AgreementContent() {
-  return <div>Zarządzanie zgodami</div>;
+  return <div>Zarządzanie zgodami</div>
 }
 
 function CorrespondenceAndNoticesContent() {
-  return <div>Korespondencja i powiadomienia</div>;
+  return <div>Korespondencja i powiadomienia</div>
 }
 
 function PaymentLimitsContent() {
-  return <div>Limity płatności</div>;
+  return <div>Limity płatności</div>
 }
 
 function AccessAndSecurityContent() {
-  return <div>Dostęp i bezpieczeństwo</div>;
+  return <div>Dostęp i bezpieczeństwo</div>
 }
-
