@@ -20,12 +20,12 @@ type Transaction = {
   currency?: string
   created_at: string
   account_id: number
-  type: string
+  type: "domestic" | "own" | "ticket" | "tax" | "foreign"
   status: "pending" | "success" | "failed"
   title: string
   reference?: string
-  user: string
-  account: string
+  from_account: string
+  to_account: string
 }
 
 type TransactionDetailsProps = {
@@ -35,7 +35,7 @@ type TransactionDetailsProps = {
 export default function TransactionDetails({
   transaction,
 }: TransactionDetailsProps) {
-  const { amount, currency, created_at, type, status, title, user, account } =
+  const { amount, currency, created_at, type, status, title, from_account, to_account } =
     transaction
 
   return (
@@ -89,12 +89,12 @@ export default function TransactionDetails({
 
           <div className="grid gap-2">
             <Label htmlFor="transaction-user">Od</Label>
-            <Input id="transaction-user" value={user} disabled />
+            <Input id="transaction-user" value={from_account} disabled />
           </div>
 
           <div className="grid gap-2">
             <Label htmlFor="transaction-account">Do</Label>
-            <Input id="transaction-account" value={account} disabled />
+            <Input id="transaction-account" value={to_account} disabled />
           </div>
         </div>
 

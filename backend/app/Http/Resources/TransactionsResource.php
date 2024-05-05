@@ -21,13 +21,13 @@ class TransactionsResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'account_id' => $this->account_id,
-            'type' => $this->type,
+            'type' => $this->transfer->transfer_type(),
             'status' => $this->status,
             'title' => $this->title,
             'reference' => $this->reference,
             'user_id' => $this->user_id,
-            'user' => $this->user,
-            'account' => $this->account,
+            'from_account' => $this->from_account,
+            'to_account' => $this->to_account,
         ];
     }
 }

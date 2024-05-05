@@ -17,8 +17,8 @@ return new class extends Migration
             $table->morphs('transfer');
             $table->decimal('amount', 10, 2);
             $table->string('status');
-            $table->string('to_account');
-            $table->string('from_account');
+            $table->string('to_account')->index();
+            $table->string('from_account')->index();
             $table->string('elixir');
             $table->string('title');
             $table->string('transaction_ip');

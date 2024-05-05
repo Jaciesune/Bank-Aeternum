@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transaction extends Model
 {
@@ -27,13 +28,18 @@ class Transaction extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function from_account()
+    public function from_account(): BelongsTo
     {
-        return $this->belongsTo(Account::class, 'from_account');
+        return $this->belongsTo(Account::class, 'from_account', 'account_number');
     }
 
     public function to_account()
     {
-        return $this->belongsTo(Account::class, 'to_account');
+        return $this->belongsTo(Account::class, 'to_account', 'account_number');
+    }
+
+    public function transfer()
+    {
+        return $this->morphTo();
     }
 }

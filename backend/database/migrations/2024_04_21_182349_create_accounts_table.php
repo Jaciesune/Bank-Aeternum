@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->string('account_number')->unique();
+            $table->string('account_number')->unique()->index();
             $table->decimal('balance', 10, 2);
             $table->string('currency');
         });

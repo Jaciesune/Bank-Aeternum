@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('foreign_transfers', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string('country');
+        });
     }
 
     /**
@@ -18,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('foreign_transfers');
     }
 };

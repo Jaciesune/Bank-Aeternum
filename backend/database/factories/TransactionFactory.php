@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Account;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\DomesticTransaction;
+use App\Models\DomesticTransfer;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Transaction>
@@ -18,7 +18,7 @@ class TransactionFactory extends Factory
      */
     public function definition(): array
     {
-        $notable = $this->faker->randomElement([DomesticTransaction::class]);
+        $notable = $this->faker->randomElement([DomesticTransfer::class]);
 
         return [
             'amount' => $this->faker->randomFloat(2, 0, 10000),
@@ -26,8 +26,8 @@ class TransactionFactory extends Factory
             'status' => $this->faker->randomElement(['pending', 'completed', 'failed']),
             'transfer_type' => $notable,
             'transfer_id' => $notable::factory(),
-            'to_account' => Account::factory(),
-            'from_account' => Account::factory(),
+            'to_account' => $this->faker->iban,
+            'from_account' => $this->faker->iban,
             'elixir' => $this->faker->randomFloat(2, 0, 10000),
             'transaction_ip' => $this->faker->ipv4,
             'currency' => $this->faker->randomElement(['USD', 'EUR', 'GBP', 'PLN']),

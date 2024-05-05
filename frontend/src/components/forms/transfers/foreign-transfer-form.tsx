@@ -35,20 +35,38 @@ type FormValues = {
   receiver_account_number: string
   title: string
   amount: string
-  date: Date
+  date: string
   type_of_transfer: string
-  receiver_country: string
+  country: string
+  name: string
 }
 
 export function ForeignTransferForm() {
   const form = useForm<FormValues>()
 
-  async function onSubmit({}: FormValues) {
+  async function onSubmit({
+    from_account,
+    receiver_name,
+    receiver_account_number,
+    title,
+    amount,
+    date,
+    type_of_transfer,
+    country,
+    name
+  }: FormValues) {
     try {
       const response = await fetchClient({
         method: "POST",
-        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/forgot-password",
-        body: JSON.stringify({}),
+        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transfer", // Aktualizacja endpointu
+        body: JSON.stringify({
+          sender_account_id: from_account,
+          receiver_account_id: receiver_account_number, // Zakładam, że numer konta odbiorcy jest tutaj używany jako identyfikator konta odbiorcy
+          title,
+          amount,
+          country,
+          name: 'foreign'
+        }),
       })
 
       if (!response.ok) {
@@ -130,7 +148,7 @@ export function ForeignTransferForm() {
           {/* Receiver country */}
           <FormField
             control={form.control}
-            name="receiver_country"
+            name="country"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Kraj Odbiorcy</FormLabel>

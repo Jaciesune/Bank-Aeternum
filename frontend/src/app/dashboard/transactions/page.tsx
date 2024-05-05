@@ -47,12 +47,12 @@ type Transaction = {
   currency?: string
   created_at: string
   account_id: number
-  type: string
+  type: "domestic" | "own" | "ticket" | "tax" | "foreign"
   status: "pending" | "success" | "failed"
   title: string
   reference?: string
-  user: string
-  account: string
+  from_account: string
+  to_account: string
 }
 
 export const columns: ColumnDef<Transaction>[] = [
@@ -71,7 +71,7 @@ export const columns: ColumnDef<Transaction>[] = [
 
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Ilość</div>,
+    header: () => <div className="text-right">Kwota</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
 

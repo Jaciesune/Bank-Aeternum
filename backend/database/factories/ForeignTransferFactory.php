@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DomesticTransaction>
  */
-class DomesticTransactionFactory extends Factory
+class ForeignTransferFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,6 +16,8 @@ class DomesticTransactionFactory extends Factory
      */
     public function definition(): array
     {
-        return [];
+        return [
+            'country' => $this->faker->country,
+        ];
     }
 }

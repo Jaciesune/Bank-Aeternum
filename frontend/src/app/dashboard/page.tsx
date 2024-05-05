@@ -116,7 +116,7 @@ const Page = () => {
                     <TableRow>
                       <TableHead className="w-[100px]">ID</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Ilość</TableHead>
+                      <TableHead>Kwota</TableHead>
                       <TableHead className="text-right">Data</TableHead>
                     </TableRow>
                   </TableHeader>

@@ -22,12 +22,12 @@ class Account extends Model
     ];
     public function sent_transactions()
     {
-        return $this->hasMany(Transaction::class, "from_account");
+        return $this->hasMany(Transaction::class, "from_account", "account_number");
     }
 
     public function recieved_transactions()
     {
-        return $this->hasMany(Transaction::class, "to_account");
+        return $this->hasMany(Transaction::class, "to_account", "account_number");
     }
 
     public function transactions()

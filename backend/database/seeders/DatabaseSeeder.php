@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $transactions = Transaction::factory()->count(25)->create();
         foreach ($transactions as $transaction) {
-            $transaction->from_account()->associate($account->id);
+            $transaction->from_account()->associate($account);
             $transaction->save();
         }
 
