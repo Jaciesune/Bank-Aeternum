@@ -32,6 +32,8 @@ class UserController extends Controller
             city: $request->input('city'),
             postal_code: $request->input('postal_code'),
             country: $request->input('country'),
+            house_number: $request->input('house_number'),
+            apartment_number: $request->input('apartment_number') ?? '',
         );
 
         return new UserResource(Auth::user());

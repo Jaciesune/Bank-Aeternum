@@ -6,6 +6,8 @@ import "tailwindcss/tailwind.css"
 
 import { cn } from "@/lib/utils"
 
+import { Toaster } from "@/components/ui/sonner"
+
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -37,7 +39,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
         disableTransitionOnChange
       >
         <AuthProvider>
-          <body>{children}</body>
+          <body>
+            {children}
+            <Toaster />
+          </body>
         </AuthProvider>
       </ThemeProvider>
     </html>

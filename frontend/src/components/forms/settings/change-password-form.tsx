@@ -55,7 +55,7 @@ export function ChangePasswordForm() {
         id="password"
         name="password"
         type="password"
-        placeholder="password"
+        placeholder="Hasło"
         onChange={clearValidity}
       />
 
@@ -64,7 +64,7 @@ export function ChangePasswordForm() {
         id="password_confirmation"
         name="password_confirmation"
         type="password"
-        placeholder="password"
+        placeholder="Powtórz hasło"
         onChange={clearValidity}
       />
 

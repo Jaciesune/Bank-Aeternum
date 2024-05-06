@@ -73,14 +73,14 @@ export default function Page() {
 
 function ProfileAndDataContent({ user }: { user: User | null | undefined }) {
   return (
-    <div>
+    <div className="space-y-8">
       <section>
-        <h2>Zmień dane użytkownika</h2>
+        <h2 className="text-2xl mb-2">Zmień dane użytkownika</h2>
         {user && <UpdateUserForm user={user} />}
       </section>
 
       <section>
-        <h2>Zmień hasło</h2>
+        <h2 className="text-2xl mb-2">Zmień hasło</h2>
         {user && <ChangePasswordForm />}
       </section>
     </div>

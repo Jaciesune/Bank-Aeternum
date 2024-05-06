@@ -12,9 +12,9 @@ declare module "next-auth" {
   }
 
   interface User {
+    email: string
     first_name: string
     last_name: string
-    email: string
     email_verified_at: string
     pesel: string
     phone: string
@@ -23,9 +23,12 @@ declare module "next-auth" {
 
   interface Address {
     street: string
-    city: string
+    house_number: string
+    apartment_number: string
     postal_code: string
+    city: string
     country: string
+    full_address: string
   }
 }
 

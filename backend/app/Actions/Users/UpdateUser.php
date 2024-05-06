@@ -17,6 +17,8 @@ class UpdateUser
         string $city,
         string $postal_code,
         string $country,
+        string $house_number,
+        string $apartment_number
     ): void {
         $user->fill([
             'first_name' => $first_name,
@@ -24,11 +26,17 @@ class UpdateUser
             'email' => $email,
             'phone' => $phone,
             'pesel' => $pesel,
-            'address->street' => $street,
-            'address->city' => $city,
-            'address->postal_code' => $postal_code,
-            'address->country' => $country,
         ]);
+
+        $user->address->update([
+            'street' => $street,
+            'city' => $city,
+            'postal_code' => $postal_code,
+            'country' => $country,
+            'house_number' => $house_number,
+            'apartment_number' => $apartment_number,
+        ]);
+
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
