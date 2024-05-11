@@ -23,10 +23,11 @@ class AccountController extends Controller
         return new AccountResource($user);
     }
 
-    public function transactions(TransactionRequest $request)
+    public function transactions($accountId, TransactionRequest $request)
     {
         $limit = $request->query('limit', 10);
-        $transactions = Auth::user()->accounts[0]->transactions()->sortByDesc("created_at")->take($limit);
+        $account = Account::findOrFail($accountId);
+        $transactions = $account->transactions()->take($limit);
         return TransactionsResource::collection($transactions);
     }
 }

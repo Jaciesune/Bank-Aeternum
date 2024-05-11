@@ -6,7 +6,7 @@ use App\Models\Address;
 use App\Models\User;
 use App\Models\Account;
 use App\Models\AccountUser;
-use App\Models\Transaction; // Add this line
+use App\Models\Transaction;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,17 +26,18 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt(env('PASSWORD_SALT', '') . self::DEVELOPER_PASSWORD),
             'address_id' => $adminAddress->id,
         ]);
-        $account = Account::factory()->create([
-            'balance' => 2137.69,
-        ]);
-        AccountUser::factory()->create([
-            'account_id' => $account->id,
-            'user_id' => $adminUser->id,
-        ]);
-        $transactions = Transaction::factory()->count(25)->create();
-        foreach ($transactions as $transaction) {
-            $transaction->from_account()->associate($account);
-            $transaction->save();
+
+        for ($i = 0; $i < 5; $i++) {
+            $account = Account::factory()->create();
+            AccountUser::factory()->create([
+                'account_id' => $account->id,
+                'user_id' => $adminUser->id,
+            ]);
+            $transactions = Transaction::factory()->count(25)->create();
+            foreach ($transactions as $transaction) {
+                $transaction->from_account()->associate($account);
+                $transaction->save();
+            }
         }
 
         // Other users

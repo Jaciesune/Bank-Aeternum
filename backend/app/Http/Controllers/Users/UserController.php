@@ -19,6 +19,13 @@ class UserController extends Controller
         return new UserResource(Auth::user());
     }
 
+    public function accounts(): JsonResponse
+    {
+        return response()->json(
+            Auth::user()->accounts,
+        );
+    }
+
     public function update(UpdateUserRequest $request, UpdateUser $updateUser): UserResource
     {
         $updateUser(

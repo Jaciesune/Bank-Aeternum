@@ -11,8 +11,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', [UserController::class, 'show'])
         ->name('user.show');
 
-    Route::get('/account/{Accountid}', [AccountController::class, 'show'])
-        ->name('account.show');
+    Route::get('/user/accounts', [UserController::class, 'accounts'])
+        ->name('user.accounts');
 
     Route::get('/account', [AccountController::class, 'index'])
         ->name('account.index');
