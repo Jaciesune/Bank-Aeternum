@@ -1,21 +1,32 @@
-"use client";
-import React from 'react';
-import { useForm } from "react-hook-form";
-import fetchClient from "@/lib/fetch-client";
-import { Button } from "@/components/ui/button";
-import { CardContent, CardFooter } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
+"use client"
+
+import React from "react"
+import { useForm } from "react-hook-form"
+
+import fetchClient from "@/lib/fetch-client"
+
+import { Button } from "@/components/ui/button"
+import { CardContent, CardFooter } from "@/components/ui/card"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Slider } from "@/components/ui/slider"
 
 type FormValues = {
-  loan_amount: string;
-  duration: string;
-  installment_type: string;
-};
+  loan_amount: string
+  duration: string
+  installment_type: string
+}
 
 export function LoanForm() {
-  const form = useForm<FormValues>();
+  const form = useForm<FormValues>()
 
   async function onSubmit({
     loan_amount,
@@ -31,34 +42,34 @@ export function LoanForm() {
           duration,
           installment_type,
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw response;
+        throw response
       }
     } catch (error) {
       if (error instanceof Response) {
-        const response = await error.json();
+        const response = await error.json()
 
         if (!response.errors) {
-          throw error;
+          throw error
         }
 
         return Object.keys(response.errors).map((errorKey) => {
           const input = document.querySelector(
             `[name="${errorKey}"]`
-          ) as HTMLInputElement;
-          input.setCustomValidity(response.errors[errorKey]);
-          input.reportValidity();
-        });
+          ) as HTMLInputElement
+          input.setCustomValidity(response.errors[errorKey])
+          input.reportValidity()
+        })
       }
 
-      throw new Error("An error has occurred during the request");
+      throw new Error("An error has occurred during the request")
     }
   }
 
   return (
-    <div className="flex space-x-8 w-full">
+    <div className="flex w-full space-x-8">
       {/* Left Form (30% width) */}
       <div style={{ flex: "30%" }}>
         <Form {...form}>
@@ -67,36 +78,68 @@ export function LoanForm() {
               <table>
                 <tbody>
                   <tr>
-                    <td><FormLabel>Twoja rata miesięczna</FormLabel></td>
-                    <td><div style={{ marginTop: "0.5rem" }}>636 zł</div></td>
+                    <td>
+                      <FormLabel>Twoja rata miesięczna</FormLabel>
+                    </td>
+                    <td>
+                      <div style={{ marginTop: "0.5rem" }}>636 zł</div>
+                    </td>
                   </tr>
                   <tr>
-                    <td><FormLabel>RRSO</FormLabel></td>
-                    <td><div>12.28%</div></td>
+                    <td>
+                      <FormLabel>RRSO</FormLabel>
+                    </td>
+                    <td>
+                      <div>12.28%</div>
+                    </td>
                   </tr>
                   <tr>
-                    <td><FormLabel>Kwota kredytowana</FormLabel></td>
-                    <td><div>30 000 zł</div></td>
+                    <td>
+                      <FormLabel>Kwota kredytowana</FormLabel>
+                    </td>
+                    <td>
+                      <div>30 000 zł</div>
+                    </td>
                   </tr>
                   <tr>
-                    <td><FormLabel>Kwota do wypłaty</FormLabel></td>
-                    <td><div>30 000 zł</div></td>
+                    <td>
+                      <FormLabel>Kwota do wypłaty</FormLabel>
+                    </td>
+                    <td>
+                      <div>30 000 zł</div>
+                    </td>
                   </tr>
                   <tr>
-                    <td><FormLabel>Całkowity koszt kredytu</FormLabel></td>
-                    <td><div>9 344 zł</div></td>
+                    <td>
+                      <FormLabel>Całkowity koszt kredytu</FormLabel>
+                    </td>
+                    <td>
+                      <div>9 344 zł</div>
+                    </td>
                   </tr>
                   <tr>
-                    <td><FormLabel>Oprocentowanie</FormLabel></td>
-                    <td><div>9.90%</div></td>
+                    <td>
+                      <FormLabel>Oprocentowanie</FormLabel>
+                    </td>
+                    <td>
+                      <div>9.90%</div>
+                    </td>
                   </tr>
                   <tr>
-                    <td><FormLabel>Wpłata własna</FormLabel></td>
-                    <td><div>0 zł</div></td>
+                    <td>
+                      <FormLabel>Wpłata własna</FormLabel>
+                    </td>
+                    <td>
+                      <div>0 zł</div>
+                    </td>
                   </tr>
                   <tr>
-                    <td><FormLabel>Ubezpieczenie kredytu</FormLabel></td>
-                    <td><div>1 188 zł</div></td>
+                    <td>
+                      <FormLabel>Ubezpieczenie kredytu</FormLabel>
+                    </td>
+                    <td>
+                      <div>1 188 zł</div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -111,7 +154,7 @@ export function LoanForm() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">
             <CardContent>
               {/* Loan Amount */}
-              <div className="flex space-x-4 items-center">
+              <div className="flex items-center space-x-4">
                 <div style={{ flex: "30%" }}>
                   <FormField
                     control={form.control}
@@ -132,7 +175,7 @@ export function LoanForm() {
               </div>
 
               {/* Duration */}
-              <div className="flex space-x-4 items-center">
+              <div className="flex items-center space-x-4">
                 <div style={{ flex: "30%" }}>
                   <FormField
                     control={form.control}
@@ -179,5 +222,5 @@ export function LoanForm() {
         </Form>
       </div>
     </div>
-  );
+  )
 }

@@ -53,7 +53,7 @@ export function DomesticTransferForm() {
     amount,
     date,
     type_of_transfer,
-    name
+    name,
   }: FormValues) {
     try {
       const response = await fetchClient({
@@ -64,21 +64,21 @@ export function DomesticTransferForm() {
           receiver_account_id: receiver_account_number, // Zakładam, że numer konta odbiorcy jest tutaj używany jako identyfikator konta odbiorcy
           title,
           amount,
-          name: 'domestic'
+          name: "domestic",
         }),
       })
-  
+
       if (!response.ok) {
         throw response
       }
     } catch (error) {
       if (error instanceof Response) {
         const response = await error.json()
-  
+
         if (!response.errors) {
           throw error
         }
-  
+
         return Object.keys(response.errors).map((errorKey) => {
           const input = document.querySelector(
             `[name="${errorKey}"]`
@@ -87,11 +87,11 @@ export function DomesticTransferForm() {
           input.reportValidity()
         })
       }
-  
+
       throw new Error("An error has occurred during the request")
     }
   }
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">

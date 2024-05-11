@@ -1,11 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { TicketTransferForm } from "@/components/forms/transfers/ticket-transfer-form"
 import { TaxTransferForm } from "@/components/forms/transfers/tax-transfer-form"
+import { TicketTransferForm } from "@/components/forms/transfers/ticket-transfer-form"
 
 const tabs = [
   { id: "tickets", label: "Mandaty", form: <TicketTransferForm /> },
-  { id: "tax", label: "PIT, CIT, VAT", form: <TaxTransferForm/> },
+  { id: "tax", label: "PIT, CIT, VAT", form: <TaxTransferForm /> },
 ]
 
 export function TaxTransfers() {

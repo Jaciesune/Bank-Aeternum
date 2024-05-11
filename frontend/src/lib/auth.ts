@@ -1,10 +1,10 @@
+import { error } from "console"
 import type { NextAuthOptions, User } from "next-auth"
 import type { JWT } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
 
 import fetchClient from "@/lib/fetch-client"
 import { jwt } from "@/lib/utils"
-import { error } from "console"
 
 export const authOptions: NextAuthOptions = {
   pages: {

@@ -1,5 +1,5 @@
-import { ModeToggle } from "@/components/mode-theme"
 import GuestNavigation from "@/components/guest-navigation"
+import { ModeToggle } from "@/components/mode-theme"
 import Link from "next/link"
 
 interface GuestLayoutProps {
@@ -17,9 +17,7 @@ export default function GuestLayout({ children }: GuestLayoutProps) {
         <GuestNavigation />
 
         <ModeToggle />
-
       </header>
-
 
       <main>{children}</main>
     </>

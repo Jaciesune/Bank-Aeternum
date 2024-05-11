@@ -35,8 +35,16 @@ type TransactionDetailsProps = {
 export default function TransactionDetails({
   transaction,
 }: TransactionDetailsProps) {
-  const { amount, currency, created_at, type, status, title, from_account, to_account } =
-    transaction
+  const {
+    amount,
+    currency,
+    created_at,
+    type,
+    status,
+    title,
+    from_account,
+    to_account,
+  } = transaction
 
   return (
     <Dialog>

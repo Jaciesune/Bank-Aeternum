@@ -18,7 +18,9 @@ export default function VerifyEmailForm() {
     try {
       const url = searchParams.get("url")
       const signature = searchParams.get("signature")
-      const response = await fetchClient({ url: url + `&signature=${signature}` }) // "?" danger
+      const response = await fetchClient({
+        url: url + `&signature=${signature}`,
+      }) // "?" danger
 
       if (!response.ok) {
         throw response

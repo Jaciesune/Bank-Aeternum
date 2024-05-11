@@ -53,7 +53,7 @@ export function ForeignTransferForm() {
     date,
     type_of_transfer,
     country,
-    name
+    name,
   }: FormValues) {
     try {
       const response = await fetchClient({
@@ -65,7 +65,7 @@ export function ForeignTransferForm() {
           title,
           amount,
           country,
-          name: 'foreign'
+          name: "foreign",
         }),
       })
 
