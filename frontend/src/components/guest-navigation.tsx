@@ -17,10 +17,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
-
-
-
-
 export default function GuestNavigation() {
   return (
     <NavigationMenu>

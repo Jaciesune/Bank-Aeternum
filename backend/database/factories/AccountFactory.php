@@ -24,7 +24,7 @@ class AccountFactory extends Factory
             'name' => $this->faker->company . "'s Account",
             'account_number' => $account_number,
             'balance' => $this->faker->randomFloat(2, 0, 10000),
-            'currency' => $this->faker->currencyCode,
+            'currency' => $this->faker->randomElement(["PLN", "EUR", "USD", "ZAR", "BLR", "PHP"]),
         ];
     }
 }
