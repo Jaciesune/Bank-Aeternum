@@ -172,6 +172,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         L5Swagger\L5SwaggerServiceProvider::class,
+        App\Providers\CurrencyExchangeProvider::class,
     ])->toArray(),
 
     /*

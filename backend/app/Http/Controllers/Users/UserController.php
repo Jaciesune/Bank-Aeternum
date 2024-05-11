@@ -12,18 +12,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+
+ 
 class UserController extends Controller
 {
     public function show(): UserResource
     {
         return new UserResource(Auth::user());
-    }
-
-    public function accounts(): JsonResponse
-    {
-        return response()->json(
-            Auth::user()->accounts,
-        );
     }
 
     public function update(UpdateUserRequest $request, UpdateUser $updateUser): UserResource
