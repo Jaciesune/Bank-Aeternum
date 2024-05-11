@@ -81,11 +81,11 @@ const Page = () => {
   const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(api)
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAccounts = async () => {
       try {
         const response = await fetchClient({
           method: "GET",
-          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/user/accounts`,
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
         })
         const data = await response.json()
         setAccounts(data)
@@ -94,7 +94,7 @@ const Page = () => {
       }
     }
 
-    fetchData()
+    fetchAccounts()
   }, [])
 
   useEffect(() => {

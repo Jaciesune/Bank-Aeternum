@@ -27,6 +27,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+import FromAccountField from "./from-account-field"
+
 type FormValues = {
   from_account: string
   receiver_name: string
@@ -48,7 +50,7 @@ export function OwnTransferForm() {
     try {
       const response = await fetchClient({
         method: "POST",
-        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/forgot-password",
+        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transactions/own-transfer",
         body: JSON.stringify({
           from_account,
           receiver_name,
@@ -94,9 +96,14 @@ export function OwnTransferForm() {
               <FormItem>
                 <FormLabel>Z konta</FormLabel>
                 <FormControl>
-                  <Input placeholder="Numer twojego konta" {...field} />
+                  <FromAccountField
+                    onChangeValue={field.onChange}
+                    selectedValue={field.value}
+                  />
                 </FormControl>
-                <FormDescription></FormDescription>
+                <FormDescription>
+                  Konto z którego chcesz wykonać przelew.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -112,7 +119,9 @@ export function OwnTransferForm() {
                 <FormControl>
                   <Input placeholder="Konto Odbiorcy" {...field} />
                 </FormControl>
-                <FormDescription></FormDescription>
+                <FormDescription>
+                  Numer konta odbiorcy przelewu.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
