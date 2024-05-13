@@ -106,6 +106,7 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
       apartment_number: user?.address.apartment_number || "",
     },
     resolver: yupResolver(schema),
+    mode: "onTouched",
   })
 
   async function onSubmit({
@@ -348,7 +349,7 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
           type="submit"
         >
           {form.formState.isSubmitting && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 size-4 animate-spin" />
           )}
 
           {form.formState.isSubmitting ? "Aktualizuję dane" : "Aktualizuj dane"}
