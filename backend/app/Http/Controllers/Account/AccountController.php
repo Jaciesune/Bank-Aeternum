@@ -14,9 +14,9 @@ use App\Services\CurrencyExchange;
 class AccountController extends Controller
 
 {
-    public function show($Accountid): AccountResource
+    public function show($account_id): AccountResource
     {
-        return new AccountResource(Account::find($Accountid));
+        return new AccountResource(Account::find($account_id));
     }
 
     public function index(CurrencyExchange $exchange)
@@ -25,10 +25,10 @@ class AccountController extends Controller
         return AccountResource::collection($accounts);
     }
 
-    public function transactions($accountId, TransactionRequest $request)
+    public function transactions($account_id, TransactionRequest $request)
     {
         $limit = $request->query('limit', 10);
-        $account = Account::findOrFail($accountId);
+        $account = Account::findOrFail($account_id);
         $transactions = $account->transactions()->sortByDesc('created_at')->take($limit);
         return TransactionsResource::collection($transactions);
     }

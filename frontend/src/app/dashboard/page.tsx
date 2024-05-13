@@ -8,6 +8,8 @@ import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
 import { DollarSign } from "react-feather"
 
+import { Account } from "@/types"
+
 import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
 
@@ -50,14 +52,6 @@ import {
 
 import { DotButton, useDotButton } from "./dots"
 
-type Account = {
-  id: number
-  name: string
-  account_number: string
-  balance: number
-  currency: string
-}
-
 type Transaction = {
   id: number
   amount: number
@@ -99,6 +93,7 @@ const Page = () => {
 
   useEffect(() => {
     const fetchTransactions = async (account_id: number, limit: number) => {
+      console.log("fetching transactions", { account_id, limit })
       setTransactionsLoading(true)
       try {
         const response = await fetchClient({
@@ -114,9 +109,9 @@ const Page = () => {
     }
 
     if (accounts) {
-      fetchTransactions(accounts[selectedIndex]?.id || 1, 5)
+      fetchTransactions(accounts[selectedIndex].id, 5)
     }
-  }, [selectedIndex])
+  }, [selectedIndex, accounts])
 
   return (
     <div className="grid grid-cols-3 gap-4">
