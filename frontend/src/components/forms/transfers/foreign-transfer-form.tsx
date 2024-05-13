@@ -1,10 +1,13 @@
 "use client"
 
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import { Account } from "@/types"
 
@@ -34,26 +37,70 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { AccountsSelect } from "@/components/fields/accounts-select"
 
+import SubmitButton from "./submit-button"
+
+type TypeOfTransfer = "standard" | "express"
+
 type FormValues = {
+  to_account: string
   from_account: string
   receiver_name: string
-  receiver_account_number: string
   title: string
-  amount: string
+  amount: number
   date: string
-  type_of_transfer: string
+  type_of_transfer: TypeOfTransfer
   country: string
-  name: string
+  name: "foreign"
 }
 
+const schema: yup.ObjectSchema<FormValues> = yup.object().shape({
+  to_account: yup
+    .string()
+    .required("To pole jest wymagane.")
+    .matches(/^\d{20}$/, "Numer konta musi składać się z 20 cyfr."),
+  from_account: yup.string().required("To pole jest wymagane."),
+  receiver_name: yup.string().required("To pole jest wymagane."),
+  title: yup.string().required("To pole jest wymagane."),
+  amount: yup
+    .number()
+    .positive("Kwota musi być większa od 0.")
+    .min(0.01, "Kwota musi być większa od 0.")
+    .typeError("To pole musi być liczbą.")
+    .transform((value, originalValue) =>
+      originalValue === "" ? undefined : value
+    )
+    .required("To pole jest wymagane."),
+  date: yup.string().required("To pole jest wymagane."),
+  type_of_transfer: yup.string().oneOf(["standard", "express"]).required(),
+  country: yup.string().required("To pole jest wymagane."),
+  name: yup
+    .string()
+    .required()
+    .oneOf(["foreign"] as const),
+})
+
 export function ForeignTransferForm() {
-  const form = useForm<FormValues>()
+  const form = useForm<FormValues>({
+    defaultValues: {
+      to_account: "",
+      from_account: "",
+      receiver_name: "",
+      title: "",
+      amount: 0,
+      date: "",
+      type_of_transfer: "standard",
+      country: "",
+      name: "foreign",
+    },
+    resolver: yupResolver(schema),
+    mode: "onTouched",
+  })
   const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
+    to_account,
     from_account,
     receiver_name,
-    receiver_account_number,
     title,
     amount,
     date,
@@ -64,10 +111,10 @@ export function ForeignTransferForm() {
     try {
       const response = await fetchClient({
         method: "POST",
-        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transfer", // Aktualizacja endpointu
+        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transfer",
         body: JSON.stringify({
-          sender_account_id: from_account,
-          receiver_account_id: receiver_account_number, // Zakładam, że numer konta odbiorcy jest tutaj używany jako identyfikator konta odbiorcy
+          from_account,
+          to_account,
           title,
           amount,
           country,
@@ -78,23 +125,10 @@ export function ForeignTransferForm() {
       if (!response.ok) {
         throw response
       }
+      toast.success("Przelew został wykonany pomyślnie.")
+      form.reset()
     } catch (error) {
-      if (error instanceof Response) {
-        const response = await error.json()
-
-        if (!response.errors) {
-          throw error
-        }
-
-        return Object.keys(response.errors).map((errorKey) => {
-          const input = document.querySelector(
-            `[name="${errorKey}"]`
-          ) as HTMLInputElement
-          input.setCustomValidity(response.errors[errorKey])
-          input.reportValidity()
-        })
-      }
-
+      toast.error("Wystąpił błąd podczas wykonywania transferu.")
       throw new Error("An error has occurred during the request")
     }
   }
@@ -118,7 +152,7 @@ export function ForeignTransferForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <CardContent>
           {/* From account */}
           <FormField
@@ -160,7 +194,7 @@ export function ForeignTransferForm() {
           {/* Receiver account number */}
           <FormField
             control={form.control}
-            name="receiver_account_number"
+            name="to_account"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Number konta odbiorcy</FormLabel>
@@ -291,11 +325,8 @@ export function ForeignTransferForm() {
           />
         </CardContent>
 
-        {/* Submit button */}
         <CardFooter>
-          <Button className="w-full" type="submit">
-            Wykonaj
-          </Button>
+          <SubmitButton form={form} />
         </CardFooter>
       </form>
     </Form>

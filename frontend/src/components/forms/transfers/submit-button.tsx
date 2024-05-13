@@ -3,11 +3,11 @@ import { type UseFormReturn } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 
-type FormFooterProps = {
+type SubmitButtonProps = {
   form: UseFormReturn<any>
 }
 
-const FormFooter = ({ form }: FormFooterProps) => {
+const SubmitButton = ({ form }: SubmitButtonProps) => {
   return (
     <Button
       disabled={
@@ -26,4 +26,4 @@ const FormFooter = ({ form }: FormFooterProps) => {
     </Button>
   )
 }
-export default FormFooter
+export default SubmitButton

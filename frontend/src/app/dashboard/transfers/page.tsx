@@ -23,7 +23,7 @@ export default async function Page() {
       <h1 className="my-4 text-4xl font-semibold">Przelewy</h1>
 
       <Tabs className="w-full" defaultValue="domestic">
-        <TabsList className="flex">
+        <TabsList className="sticky top-4 flex">
           {tabs.map((tab) => (
             <TabsTrigger key={tab.id} value={tab.id} className="flex-1">
               {tab.label}
