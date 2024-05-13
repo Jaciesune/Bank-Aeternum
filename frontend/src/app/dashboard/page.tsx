@@ -109,7 +109,7 @@ const Page = () => {
     }
 
     if (accounts) {
-      fetchTransactions(accounts[selectedIndex].id, 5)
+      fetchTransactions(accounts[selectedIndex]?.id || 1, 5)
     }
   }, [selectedIndex, accounts])
 

@@ -37,44 +37,54 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { AccountsSelect } from "@/components/fields/accounts-select"
 
+import SubmitButton from "./submit-button"
+
 type TypeOfTransfer = "standard" | "express"
 
 type FormValues = {
+  to_account: string
   from_account: string
   receiver_name: string
-  receiver_account_number: string
   title: string
-  amount: string
+  amount: number
   date: string
   type_of_transfer: TypeOfTransfer
-  name: string
+  name: "domestic"
 }
 
 const schema: yup.ObjectSchema<FormValues> = yup.object().shape({
-  from_account: yup.string().required("To pole jest wymagane."),
-  receiver_name: yup.string().required("To pole jest wymagane."),
-  receiver_account_number: yup
+  to_account: yup
     .string()
     .required("To pole jest wymagane.")
     .matches(/^\d{20}$/, "Numer konta musi składać się z 20 cyfr."),
+  from_account: yup.string().required("To pole jest wymagane."),
+  receiver_name: yup.string().required("To pole jest wymagane."),
   title: yup.string().required("To pole jest wymagane."),
   amount: yup
-    .string()
-    .required("To pole jest wymagane.")
-    .matches(/^\d+(\.\d{1,2})?$/, "Niepoprawna kwota."),
+    .number()
+    .positive("Kwota musi być większa od 0.")
+    .min(0.01, "Kwota musi być większa od 0.")
+    .typeError("To pole musi być liczbą.")
+    .transform((value, originalValue) =>
+      originalValue === "" ? undefined : value
+    )
+    .required("To pole jest wymagane."),
   date: yup.string().required("To pole jest wymagane."),
   type_of_transfer: yup.string().oneOf(["standard", "express"]).required(),
-  name: yup.string().required("To pole jest wymagane."),
+  name: yup
+    .string()
+    .required()
+    .oneOf(["domestic"] as const),
 })
 
 export function DomesticTransferForm() {
   const form = useForm<FormValues>({
     defaultValues: {
+      to_account: "",
       from_account: "",
       receiver_name: "",
-      receiver_account_number: "",
       title: "",
-      amount: "",
+      amount: 0,
       date: "",
       type_of_transfer: "standard",
       name: "domestic",
@@ -85,20 +95,26 @@ export function DomesticTransferForm() {
   const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
+    to_account,
     from_account,
-    receiver_account_number,
+    receiver_name,
     title,
     amount,
+    date,
+    type_of_transfer,
   }: FormValues) {
     try {
       const response = await fetchClient({
         method: "POST",
         url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transfer",
         body: JSON.stringify({
-          sender_account_id: from_account,
-          receiver_account_id: receiver_account_number,
+          from_account,
+          to_account,
+          receiver_name,
           title,
           amount,
+          date: format(date, "yyyy-MM-dd"),
+          type_of_transfer,
           name: "domestic",
         }),
       })
@@ -175,7 +191,7 @@ export function DomesticTransferForm() {
           {/* Receiver account number */}
           <FormField
             control={form.control}
-            name="receiver_account_number"
+            name="to_account"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Number konta odbiorcy</FormLabel>
@@ -212,7 +228,7 @@ export function DomesticTransferForm() {
               <FormItem>
                 <FormLabel>Kwota</FormLabel>
                 <FormControl>
-                  <Input placeholder="0.0 zł" {...field} />
+                  <Input type="number" {...field} />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -292,21 +308,7 @@ export function DomesticTransferForm() {
 
         {/* Submit button */}
         <CardFooter>
-          <Button
-            disabled={
-              form.formState.isSubmitting ||
-              !form.formState.isDirty ||
-              !form.formState.isValid
-            }
-            className="w-full"
-            type="submit"
-          >
-            {form.formState.isSubmitting && (
-              <Loader2 className="mr-2 size-4 animate-spin" />
-            )}
-
-            {form.formState.isSubmitting ? "Transakcja w toku..." : "Wykonaj"}
-          </Button>
+          <SubmitButton form={form} />
         </CardFooter>
       </form>
     </Form>
