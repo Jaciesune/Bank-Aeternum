@@ -29,7 +29,7 @@ class AccountController extends Controller
     {
         $limit = $request->query('limit', 10);
         $account = Account::findOrFail($accountId);
-        $transactions = $account->transactions()->take($limit);
+        $transactions = $account->transactions()->sortByDesc('created_at')->take($limit);
         return TransactionsResource::collection($transactions);
     }
 }

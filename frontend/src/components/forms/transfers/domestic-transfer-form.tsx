@@ -4,7 +4,10 @@ import { Label } from "@radix-ui/react-label"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+
+import { Account } from "@/types"
 
 import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
@@ -29,6 +32,8 @@ import {
 } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
+import { AccountsSelect } from "@/components/fields/accounts-select"
+
 type TypeOfTransfer = "standard" | "express"
 
 type FormValues = {
@@ -44,24 +49,21 @@ type FormValues = {
 
 export function DomesticTransferForm() {
   const form = useForm<FormValues>()
+  const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
     from_account,
-    receiver_name,
     receiver_account_number,
     title,
     amount,
-    date,
-    type_of_transfer,
-    name,
   }: FormValues) {
     try {
       const response = await fetchClient({
         method: "POST",
-        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transfer", // Aktualizacja endpointu
+        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transfer",
         body: JSON.stringify({
           sender_account_id: from_account,
-          receiver_account_id: receiver_account_number, // Zakładam, że numer konta odbiorcy jest tutaj używany jako identyfikator konta odbiorcy
+          receiver_account_id: receiver_account_number,
           title,
           amount,
           name: "domestic",
@@ -92,6 +94,23 @@ export function DomesticTransferForm() {
     }
   }
 
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await fetchClient({
+          method: "GET",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
+        })
+        const data = await response.json()
+        setAccounts(data)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+
+    fetchAccounts()
+  }, [])
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">
@@ -104,7 +123,12 @@ export function DomesticTransferForm() {
               <FormItem>
                 <FormLabel>Z konta</FormLabel>
                 <FormControl>
-                  <Input placeholder="Numer twojego konta" {...field} />
+                  <AccountsSelect
+                    placeholder="Nie wybrano konta."
+                    accounts={accounts}
+                    onChangeValue={field.onChange}
+                    selectedValue={field.value}
+                  />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -224,7 +248,7 @@ export function DomesticTransferForm() {
           <FormField
             control={form.control}
             name="type_of_transfer"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>Typ przelewu</FormLabel>
                 <FormControl>
