@@ -3,7 +3,10 @@
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+
+import { Account } from "@/types"
 
 import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
@@ -27,7 +30,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import FromAccountField from "./from-account-field"
+import { AccountsSelect } from "@/components/fields/accounts-select"
 
 type FormValues = {
   from_account: string
@@ -39,6 +42,9 @@ type FormValues = {
 
 export function OwnTransferForm() {
   const form = useForm<FormValues>()
+  const [fromAccount, setFromAccount] = useState<string>("")
+  const [toAccount, setToAccount] = useState<string>("")
+  const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
     from_account,
@@ -50,7 +56,9 @@ export function OwnTransferForm() {
     try {
       const response = await fetchClient({
         method: "POST",
-        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transactions/own-transfer",
+        url:
+          process.env.NEXT_PUBLIC_BACKEND_API_URL +
+          "/api/transactions/own-transfer",
         body: JSON.stringify({
           from_account,
           receiver_name,
@@ -84,6 +92,30 @@ export function OwnTransferForm() {
     }
   }
 
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await fetchClient({
+          method: "GET",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
+        })
+        const data = await response.json()
+        setAccounts(data)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+
+    fetchAccounts()
+  }, [])
+
+  useEffect(() => {
+    console.log({
+      fromAccount,
+      toAccount,
+    })
+  }, [fromAccount, toAccount])
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">
@@ -96,9 +128,13 @@ export function OwnTransferForm() {
               <FormItem>
                 <FormLabel>Z konta</FormLabel>
                 <FormControl>
-                  <FromAccountField
-                    onChangeValue={field.onChange}
-                    selectedValue={field.value}
+                  <AccountsSelect
+                    placeholder="Nie wybrano konta."
+                    accounts={accounts.filter(
+                      (account) => account.account_number !== toAccount
+                    )}
+                    onChangeValue={(value) => setFromAccount(value)}
+                    selectedValue={fromAccount}
                   />
                 </FormControl>
                 <FormDescription>
@@ -117,7 +153,14 @@ export function OwnTransferForm() {
               <FormItem>
                 <FormLabel>Na Konto</FormLabel>
                 <FormControl>
-                  <Input placeholder="Konto Odbiorcy" {...field} />
+                  <AccountsSelect
+                    placeholder="Nie wybrano konta."
+                    accounts={accounts.filter(
+                      (account) => account.account_number !== fromAccount
+                    )}
+                    onChangeValue={(value) => setToAccount(value)}
+                    selectedValue={toAccount}
+                  />
                 </FormControl>
                 <FormDescription>
                   Numer konta odbiorcy przelewu.

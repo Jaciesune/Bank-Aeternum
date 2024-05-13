@@ -3,7 +3,10 @@
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+
+import { Account } from "@/types"
 
 import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
@@ -29,6 +32,8 @@ import {
 } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
+import { AccountsSelect } from "@/components/fields/accounts-select"
+
 type FormValues = {
   from_account: string
   receiver_name: string
@@ -43,6 +48,7 @@ type FormValues = {
 
 export function ForeignTransferForm() {
   const form = useForm<FormValues>()
+  const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
     from_account,
@@ -93,6 +99,23 @@ export function ForeignTransferForm() {
     }
   }
 
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await fetchClient({
+          method: "GET",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
+        })
+        const data = await response.json()
+        setAccounts(data)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+
+    fetchAccounts()
+  }, [])
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">
@@ -105,7 +128,12 @@ export function ForeignTransferForm() {
               <FormItem>
                 <FormLabel>Z konta</FormLabel>
                 <FormControl>
-                  <Input placeholder="Numer twojego konta" {...field} />
+                  <AccountsSelect
+                    placeholder="Nie wybrano konta."
+                    accounts={accounts}
+                    onChangeValue={field.onChange}
+                    selectedValue={field.value}
+                  />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
