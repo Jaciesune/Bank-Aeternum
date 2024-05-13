@@ -16,13 +16,14 @@ class TransactionController extends Controller
         $name = $request->input('name');
         $country = $request->input('country') ?? null;
 
-        if ($name === 'domestic') {
+        if ($name === 'domestic' || $name === 'own') {
             $country = 'domestic_tmp';
         }
 
         $createTransaction(
-            sender_account_id: $request->input('sender_account_id'),
-            receiver_account_id: $request->input('receiver_account_id'),
+            to_account: $request->input('to_account'),
+            from_account: $request->input('from_account'),
+            // receiver_name: $request->input('receiver_name'),
             title: $request->input('title'),
             amount: $request->input('amount'),
             req_ip: $request->ip(),

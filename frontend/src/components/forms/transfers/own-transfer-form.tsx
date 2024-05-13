@@ -1,10 +1,13 @@
 "use client"
 
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import { Account } from "@/types"
 
@@ -32,62 +35,84 @@ import {
 
 import { AccountsSelect } from "@/components/fields/accounts-select"
 
+import SubmitButton from "./submit-button"
+
 type FormValues = {
+  to_account: string
   from_account: string
-  receiver_name: string
   title: string
-  amount: string
-  date: Date
+  amount: number
+  date: string
+  name: "own"
 }
 
+const schema: yup.ObjectSchema<FormValues> = yup.object().shape({
+  to_account: yup
+    .string()
+    .required("To pole jest wymagane.")
+    .matches(/^\d{20}$/, "Numer konta musi składać się z 20 cyfr."),
+  from_account: yup.string().required("To pole jest wymagane."),
+  title: yup.string().required("To pole jest wymagane."),
+  amount: yup
+    .number()
+    .positive("Kwota musi być większa od 0.")
+    .min(0.01, "Kwota musi być większa od 0.")
+    .typeError("To pole musi być liczbą.")
+    .transform((value, originalValue) =>
+      originalValue === "" ? undefined : value
+    )
+    .required("To pole jest wymagane."),
+  date: yup.string().required("To pole jest wymagane."),
+  name: yup
+    .string()
+    .required()
+    .oneOf(["own"] as const),
+})
+
 export function OwnTransferForm() {
-  const form = useForm<FormValues>()
-  const [fromAccount, setFromAccount] = useState<string>("")
-  const [toAccount, setToAccount] = useState<string>("")
+  const form = useForm<FormValues>({
+    defaultValues: {
+      to_account: "",
+      from_account: "",
+      title: "",
+      amount: 0,
+      date: "",
+      name: "own",
+    },
+    resolver: yupResolver(schema),
+    mode: "onTouched",
+  })
   const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
+    to_account,
     from_account,
-    receiver_name,
     title,
     amount,
     date,
+    name,
   }: FormValues) {
     try {
       const response = await fetchClient({
         method: "POST",
-        url:
-          process.env.NEXT_PUBLIC_BACKEND_API_URL +
-          "/api/transactions/own-transfer",
+        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transfer",
         body: JSON.stringify({
+          to_account,
           from_account,
-          receiver_name,
           title,
           amount,
           date: format(date, "yyyy-MM-dd"),
+          name,
         }),
       })
 
       if (!response.ok) {
         throw response
       }
+      toast.success("Przelew został wykonany pomyślnie.")
+      form.reset()
     } catch (error) {
-      if (error instanceof Response) {
-        const response = await error.json()
-
-        if (!response.errors) {
-          throw error
-        }
-
-        return Object.keys(response.errors).map((errorKey) => {
-          const input = document.querySelector(
-            `[name="${errorKey}"]`
-          ) as HTMLInputElement
-          input.setCustomValidity(response.errors[errorKey])
-          input.reportValidity()
-        })
-      }
-
+      toast.error("Wystąpił błąd podczas wykonywania przelewu.")
       throw new Error("An error has occurred during the request")
     }
   }
@@ -109,16 +134,9 @@ export function OwnTransferForm() {
     fetchAccounts()
   }, [])
 
-  useEffect(() => {
-    console.log({
-      fromAccount,
-      toAccount,
-    })
-  }, [fromAccount, toAccount])
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <CardContent>
           {/* From account */}
           <FormField
@@ -131,10 +149,11 @@ export function OwnTransferForm() {
                   <AccountsSelect
                     placeholder="Nie wybrano konta."
                     accounts={accounts.filter(
-                      (account) => account.account_number !== toAccount
+                      (account) =>
+                        account.account_number !== form.getValues("to_account")
                     )}
-                    onChangeValue={(value) => setFromAccount(value)}
-                    selectedValue={fromAccount}
+                    onChangeValue={field.onChange}
+                    selectedValue={field.value}
                   />
                 </FormControl>
                 <FormDescription>
@@ -148,7 +167,7 @@ export function OwnTransferForm() {
           {/* Receiver name */}
           <FormField
             control={form.control}
-            name="receiver_name"
+            name="to_account"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Na Konto</FormLabel>
@@ -156,10 +175,12 @@ export function OwnTransferForm() {
                   <AccountsSelect
                     placeholder="Nie wybrano konta."
                     accounts={accounts.filter(
-                      (account) => account.account_number !== fromAccount
+                      (account) =>
+                        account.account_number !==
+                        form.getValues("from_account")
                     )}
-                    onChangeValue={(value) => setToAccount(value)}
-                    selectedValue={toAccount}
+                    onChangeValue={field.onChange}
+                    selectedValue={field.value}
                   />
                 </FormControl>
                 <FormDescription>
@@ -194,7 +215,7 @@ export function OwnTransferForm() {
               <FormItem>
                 <FormLabel>Kwota</FormLabel>
                 <FormControl>
-                  <Input placeholder="0.0 zł" {...field} />
+                  <Input type="number" {...field} />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -249,9 +270,7 @@ export function OwnTransferForm() {
 
         {/* Submit button */}
         <CardFooter>
-          <Button className="w-full" type="submit">
-            Wykonaj
-          </Button>
+          <SubmitButton form={form} />
         </CardFooter>
       </form>
     </Form>
