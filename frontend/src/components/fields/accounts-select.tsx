@@ -41,7 +41,7 @@ export const AccountsSelect = ({
   selectedValue,
   onChangeValue,
 }: AccountsSelectProps) => {
-  const [value, setValue] = useState("")
+  const [value, setValue] = useState(selectedValue)
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
   const [open, setOpen] = useState(false)
 

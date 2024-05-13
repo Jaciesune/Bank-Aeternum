@@ -1,11 +1,14 @@
 "use client"
 
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 import { Label } from "@radix-ui/react-label"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, Loader2, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import { Account } from "@/types"
 
@@ -47,8 +50,38 @@ type FormValues = {
   name: string
 }
 
+const schema: yup.ObjectSchema<FormValues> = yup.object().shape({
+  from_account: yup.string().required("To pole jest wymagane."),
+  receiver_name: yup.string().required("To pole jest wymagane."),
+  receiver_account_number: yup
+    .string()
+    .required("To pole jest wymagane.")
+    .matches(/^\d{20}$/, "Numer konta musi składać się z 20 cyfr."),
+  title: yup.string().required("To pole jest wymagane."),
+  amount: yup
+    .string()
+    .required("To pole jest wymagane.")
+    .matches(/^\d+(\.\d{1,2})?$/, "Niepoprawna kwota."),
+  date: yup.string().required("To pole jest wymagane."),
+  type_of_transfer: yup.string().oneOf(["standard", "express"]).required(),
+  name: yup.string().required("To pole jest wymagane."),
+})
+
 export function DomesticTransferForm() {
-  const form = useForm<FormValues>()
+  const form = useForm<FormValues>({
+    defaultValues: {
+      from_account: "",
+      receiver_name: "",
+      receiver_account_number: "",
+      title: "",
+      amount: "",
+      date: "",
+      type_of_transfer: "standard",
+      name: "domestic",
+    },
+    resolver: yupResolver(schema),
+    mode: "onTouched",
+  })
   const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
@@ -73,24 +106,11 @@ export function DomesticTransferForm() {
       if (!response.ok) {
         throw response
       }
+      toast.success("Przelew został wykonany pomyślnie.")
+      form.reset()
     } catch (error) {
-      if (error instanceof Response) {
-        const response = await error.json()
-
-        if (!response.errors) {
-          throw error
-        }
-
-        return Object.keys(response.errors).map((errorKey) => {
-          const input = document.querySelector(
-            `[name="${errorKey}"]`
-          ) as HTMLInputElement
-          input.setCustomValidity(response.errors[errorKey])
-          input.reportValidity()
-        })
-      }
-
-      throw new Error("An error has occurred during the request")
+      toast.error("Wystąpił błąd podczas wykonywania transferu.")
+      console.error("Error submitting form:", error)
     }
   }
 
@@ -113,7 +133,7 @@ export function DomesticTransferForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <CardContent>
           {/* From account */}
           <FormField
@@ -272,8 +292,20 @@ export function DomesticTransferForm() {
 
         {/* Submit button */}
         <CardFooter>
-          <Button className="w-full" type="submit">
-            Wykonaj
+          <Button
+            disabled={
+              form.formState.isSubmitting ||
+              !form.formState.isDirty ||
+              !form.formState.isValid
+            }
+            className="w-full"
+            type="submit"
+          >
+            {form.formState.isSubmitting && (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            )}
+
+            {form.formState.isSubmitting ? "Transakcja w toku..." : "Wykonaj"}
           </Button>
         </CardFooter>
       </form>
