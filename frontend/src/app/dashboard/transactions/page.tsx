@@ -145,7 +145,7 @@ export default function Page() {
       try {
         const response = await fetchClient({
           method: "GET",
-          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account/1/transactions?limit=${limit}`, // TODO: remove hardcoded account id
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/transactions/1?limit=${limit}`,
         })
         const data = await response.json()
         setData(data)

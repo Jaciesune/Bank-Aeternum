@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Account;
 use App\Models\AccountUser;
 use App\Models\Transaction;
+use App\Models\Notification;
+use App\Models\Loan;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -33,10 +35,25 @@ class DatabaseSeeder extends Seeder
                 'account_id' => $account->id,
                 'user_id' => $adminUser->id,
             ]);
+
             $transactions = Transaction::factory()->count(25)->create();
             foreach ($transactions as $transaction) {
                 $transaction->from_account()->associate($account);
                 $transaction->save();
+            }
+
+            // notification with title: Caryca rób backend! i content śmieszny
+            Notification::factory()->create([
+                'user_id' => $adminUser->id,
+                'title' => 'Caryca rób backend!',
+                'content' => 'Brakuje Ci backendu? Zaprogramuj go sam!',
+            ]);
+            Notification::factory()->count(5)->create(['user_id' => $adminUser->id]);
+
+            $loans = Loan::factory()->count(5)->create();
+            foreach ($loans as $loan) {
+                $loan->user()->associate($account->id);
+                $loan->save();
             }
         }
 
@@ -55,6 +72,14 @@ class DatabaseSeeder extends Seeder
             foreach ($transactions as $transaction) {
                 $transaction->from_account()->associate($account->id);
                 $transaction->save();
+            }
+
+            Notification::factory()->count(5)->create(['user_id' => $user->id]);
+
+            $loans = Loan::factory()->count(5)->create();
+            foreach ($loans as $loan) {
+                $loan->user()->associate($account->id);
+                $loan->save();
             }
         }
     }

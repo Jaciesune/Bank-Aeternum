@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Accounts;
 
 use App\Models\Account;
-use App\Services\CurrencyExchange;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
