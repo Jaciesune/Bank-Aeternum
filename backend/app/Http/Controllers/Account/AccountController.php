@@ -24,12 +24,4 @@ class AccountController extends Controller
         $accounts = Auth::user()->accounts;
         return AccountResource::collection($accounts);
     }
-
-    public function transactions($account_id, TransactionRequest $request)
-    {
-        $limit = $request->query('limit', 10);
-        $account = Account::findOrFail($account_id);
-        $transactions = $account->transactions()->sortByDesc('created_at')->take($limit);
-        return TransactionsResource::collection($transactions);
-    }
 }

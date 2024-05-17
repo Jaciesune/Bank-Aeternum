@@ -38,6 +38,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -66,11 +67,21 @@ type Transaction = {
   account: string
 }
 
+type Notification = {
+  id: number
+  title: string
+  content: string
+  created_at: string
+  read: boolean
+}
+
 const Page = () => {
-  const [transactionsLoading, setTransactionsLoading] = useState(true)
-  const [accounts, setAccounts] = useState<Account[]>([])
   const [api, setApi] = useState<CarouselApi>()
+  const [accounts, setAccounts] = useState<Account[]>([])
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [notificationsLoading, setNotificationsLoading] = useState(true)
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [transactionsLoading, setTransactionsLoading] = useState(true)
 
   const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(api)
 
@@ -98,7 +109,7 @@ const Page = () => {
       try {
         const response = await fetchClient({
           method: "GET",
-          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account/${account_id}/transactions?limit=${limit}`,
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/transactions/${account_id}?limit=${limit}`,
         })
         const data = await response.json()
         setTransactions(data)
@@ -112,6 +123,25 @@ const Page = () => {
       fetchTransactions(accounts[selectedIndex]?.id || 1, 5)
     }
   }, [selectedIndex, accounts])
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      setNotificationsLoading(true)
+      try {
+        const response = await fetchClient({
+          method: "GET",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/notification`,
+        })
+        const data = await response.json()
+        setNotifications(data)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+      setNotificationsLoading(false)
+    }
+
+    fetchNotifications()
+  }, [])
 
   return (
     <div className="grid grid-cols-3 gap-4">
@@ -189,7 +219,46 @@ const Page = () => {
           </div>
           <Button asChild size="sm" className="ml-auto gap-1"></Button>
         </CardHeader>
-        <CardContent></CardContent>
+        <CardContent>
+          <ScrollArea className="h-80">
+            {!notificationsLoading ? (
+              <div className="grid gap-2">
+                {notifications.map((notification) => (
+                  <Card key={notification.id}>
+                    <CardHeader>
+                      <CardTitle className="text-lg">
+                        {notification.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-xs text-muted-foreground">
+                        {notification.content}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-end text-xs text-muted-foreground">
+                      {format(notification.created_at, "dd.MM.yyyy HH:mm")}
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-2">
+                <Card>
+                  <CardHeader>
+                    <Skeleton className="h-4 w-14" />
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                  </CardContent>
+                  <CardFooter className="flex justify-end">
+                    <Skeleton className="h-4 w-14" />
+                  </CardFooter>
+                </Card>
+              </div>
+            )}
+          </ScrollArea>
+        </CardContent>
       </Card>
 
       {/* History */}
@@ -199,7 +268,11 @@ const Page = () => {
             <CardTitle>Historia Transakcji</CardTitle>
 
             <Button asChild size="sm" variant="outline">
-              <Link href="/dashboard/transactions">Pokaż wszystkie</Link>
+              <Link
+                href={`/dashboard/transactions?account_id=${accounts[selectedIndex]?.id}`}
+              >
+                Pokaż wszystkie
+              </Link>
             </Button>
           </div>
         </CardHeader>

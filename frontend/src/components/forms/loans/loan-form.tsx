@@ -68,6 +68,8 @@ export function LoanForm() {
     }
   }
 
+
+
   return (
     <div className="flex w-full space-x-8">
       {/* Left Form (30% width) */}
