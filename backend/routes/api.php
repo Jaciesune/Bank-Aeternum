@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\Transaction\TransactionController;
+use App\Http\Controllers\TaxOffice\TaxOfficeController;
 
 require __DIR__ . '/auth.php';
 
@@ -23,6 +24,9 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('notification', [NotificationController::class, 'index'])
         ->name('notification');
+    
+    Route::get('tax-office', [TaxOfficeController::class, 'index'])
+        ->name('taxOffice');
 });
 
 Route::middleware(['auth:api', 'verified'])->group(function () {

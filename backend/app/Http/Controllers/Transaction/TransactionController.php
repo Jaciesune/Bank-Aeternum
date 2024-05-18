@@ -22,16 +22,23 @@ class TransactionController extends Controller
     public function create(Request $request, CreateTransaction $createTransaction): JsonResponse
     {
         $name = $request->input('name');
-        $country = $request->input('country') ?? null;
+        $country = $request->input('country') ?? "";
+        $title = $request->input('title') ?? "";
 
-        if ($name === 'domestic' || $name === 'own') {
-            $country = 'domestic_tmp';
+        if (
+            $name === 'domestic' || $name === 'own' || $name === "tax" || $name === "ticket"
+        ) {
+            $country = 'tmp';
+        }
+
+        if ($name === 'tax' || $name === 'ticket') {
+            $title = 'tmp';   
         }
 
         $createTransaction(
             to_account: $request->input('to_account'),
             from_account: $request->input('from_account'),
-            title: $request->input('title'),
+            title: $title,
             amount: $request->input('amount'),
             req_ip: $request->ip(),
             country: $country,

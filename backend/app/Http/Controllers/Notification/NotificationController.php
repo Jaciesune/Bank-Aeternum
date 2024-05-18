@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Notification;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Notifications\NotificationResource;
-use App\Models\Notification; // Ensure this is the correct namespace for your Notification model
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\DatabaseNotification;

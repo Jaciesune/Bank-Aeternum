@@ -3,7 +3,10 @@
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+
+import type { Account } from "@/types"
 
 import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
@@ -28,28 +31,59 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+import { AccountsSelect } from "@/components/fields/accounts-select"
+
+import SubmitButton from "./submit-button"
 
 type FormValues = {
   form_symbol: string
   tax_office_account_number: string
-  identyficator_type: string
-  identyficator_number: string
+  pesel: string
   from_account: string
   amount: string
   date: Date
   type_of_transfer: string
+  name: 'ticket'
 }
 
 export function TicketTransferForm() {
-  const form = useForm<FormValues>()
+  const form = useForm<FormValues>({
+    defaultValues: {
+      form_symbol: "Mandaty",
+      tax_office_account_number: "47 1010 0055 0201 6090 0999 0000",
+      pesel: "",
+      from_account: "",
+      amount: "",
+      date: new Date(),
+      type_of_transfer: "standard",
+    },
+  })
+  const [accounts, setAccounts] = useState<Account[]>([])
 
-  async function onSubmit({}: FormValues) {
+  async function fetchAccounts() {
+    try {
+      const response = await fetchClient({
+        method: "GET",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
+      })
+      const data = await response.json()
+      setAccounts(data)
+    } catch (error) {
+      console.error("Error fetching accounts:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchAccounts()
+  }, [])
+
+  async function onSubmit(data: FormValues) {
     try {
       const response = await fetchClient({
         method: "POST",
-        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/forgot-password",
-        body: JSON.stringify({}),
+        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/ticket-transfer",
+        body: JSON.stringify(data),
       })
 
       if (!response.ok) {
@@ -78,9 +112,9 @@ export function TicketTransferForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8d">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <CardContent>
-          {/* Form Symbol*/}
+          {/* Form Symbol */}
           <FormField
             control={form.control}
             name="form_symbol"
@@ -88,7 +122,7 @@ export function TicketTransferForm() {
               <FormItem>
                 <FormLabel>Symbol Formularza</FormLabel>
                 <FormControl>
-                  <Input placeholder="Mandaty" {...field} />
+                  <Input placeholder="Mandaty" {...field} disabled />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -104,39 +138,26 @@ export function TicketTransferForm() {
               <FormItem>
                 <FormLabel>Konto urzędu skarbowego</FormLabel>
                 <FormControl>
-                  <Input placeholder="Wpisz numer konta" {...field} />
+                  <Input placeholder="Wpisz numer konta" {...field} disabled />
                 </FormControl>
-                <FormDescription></FormDescription>
+                <FormDescription>
+                  Urząd skarbowy w Opolu. Wszystkie mandaty są opłacane na to
+                  konto.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Identyficator Type*/}
+          {/* PESEL */}
           <FormField
             control={form.control}
-            name="identyficator_type"
+            name="pesel"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Typ Identyfikatora</FormLabel>
+                <FormLabel>PESEL</FormLabel>
                 <FormControl>
-                  <Input placeholder="PESEL" {...field} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Identyficator Number */}
-          <FormField
-            control={form.control}
-            name="identyficator_number"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Numer Identyfikatora</FormLabel>
-                <FormControl>
-                  <Input placeholder="034******21" {...field} />
+                  <Input placeholder="00000000000" {...field} />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -150,11 +171,18 @@ export function TicketTransferForm() {
             name="from_account"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Wybierz</FormLabel>
+                <FormLabel>Z konta</FormLabel>
                 <FormControl>
-                  <Input placeholder="034******21" {...field} />
+                  <AccountsSelect
+                    placeholder="Nie wybrano konta."
+                    accounts={accounts}
+                    onChangeValue={field.onChange}
+                    selectedValue={field.value}
+                  />
                 </FormControl>
-                <FormDescription></FormDescription>
+                <FormDescription>
+                  Konto z którego chcesz wykonać przelew.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -169,7 +197,7 @@ export function TicketTransferForm() {
                 <FormItem>
                   <FormLabel>Kwota</FormLabel>
                   <FormControl>
-                    <Input placeholder="0.0 zł" {...field} />
+                    <Input placeholder="0.0 PLN" {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -193,7 +221,7 @@ export function TicketTransferForm() {
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP")
+                            format(field.value, "PPP", { locale: pl })
                           ) : (
                             <span>Wybierz datę</span>
                           )}
@@ -206,7 +234,6 @@ export function TicketTransferForm() {
                         locale={pl}
                         captionLayout="dropdown-buttons"
                         mode="single"
-                        // selected={field.value}
                         onSelect={field.onChange}
                         disabled={(date: Date) => date <= new Date()}
                         initialFocus
@@ -226,14 +253,14 @@ export function TicketTransferForm() {
               <FormItem>
                 <FormLabel>Typ przelewu</FormLabel>
                 <FormControl>
-                  <RadioGroup defaultValue="option-one">
+                  <RadioGroup defaultValue="standard">
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-one" id="option-one" />
-                      <Label htmlFor="option-one">Standardowy</Label>
+                      <RadioGroupItem value="standard" id="standard" />
+                      <Label htmlFor="standard">Standardowy</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-two" />
-                      <Label htmlFor="option-two">Natychmiastowy</Label>
+                      <RadioGroupItem value="immediate" id="immediate" />
+                      <Label htmlFor="immediate">Natychmiastowy</Label>
                     </div>
                   </RadioGroup>
                 </FormControl>
@@ -246,9 +273,7 @@ export function TicketTransferForm() {
 
         {/* Submit button */}
         <CardFooter>
-          <Button className="w-full" type="submit">
-            Wykonaj
-          </Button>
+          <SubmitButton form={form} />
         </CardFooter>
       </form>
     </Form>

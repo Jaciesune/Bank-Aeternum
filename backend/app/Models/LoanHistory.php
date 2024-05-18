@@ -12,6 +12,7 @@ class LoanHistory extends Model
     protected $fillable = [
         'loan_id',
         'status',
+        'amount',
         'created_at',
         'updated_at',
     ];

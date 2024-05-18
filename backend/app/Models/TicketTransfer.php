@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TaxTransfer extends Model
+class TicketTransfer extends Model
 {
     use HasFactory;
 
@@ -15,6 +15,6 @@ class TaxTransfer extends Model
     }
 
     public function transfer_type() {
-        return "tax";
+        return "ticket";
     }
 }

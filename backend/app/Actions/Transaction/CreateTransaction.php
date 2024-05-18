@@ -7,6 +7,8 @@ use App\Models\OwnTransfer;
 use App\Models\ForeignTransfer;
 use App\Models\Transaction;
 use App\Jobs\ProcessTransaction;
+use App\Models\TaxTransfer;
+use App\Models\TicketTransfer;
 use Illuminate\Support\Facades\Log;
 
 class CreateTransaction
@@ -39,6 +41,11 @@ class CreateTransaction
             ]));
         } else if ($name == 'own') {
             $transaction->transfer()->associate(OwnTransfer::create([]));
+        } else if ($name == 'tax'){
+            $transaction->transfer()->associate(TaxTransfer::create([]));
+            
+        } else if ($name == 'ticket'){
+            $transaction->transfer()->associate(TicketTransfer::create([]));
         }
         $transaction->save();
         ProcessTransaction::dispatch($transaction);
