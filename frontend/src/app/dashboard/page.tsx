@@ -269,7 +269,7 @@ const Page = () => {
 
             <Button asChild size="sm" variant="outline">
               <Link
-                href={`/dashboard/transactions?account_id=${accounts[selectedIndex]?.id}`}
+                href={`/dashboard/transactions/${accounts[selectedIndex]?.id}`}
               >
                 Pokaż wszystkie
               </Link>

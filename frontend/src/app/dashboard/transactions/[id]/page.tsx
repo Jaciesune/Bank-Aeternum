@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 import fetchClient from "@/lib/fetch-client"
@@ -121,6 +122,9 @@ export default function Page() {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState<Transaction[]>([])
 
+  const params = useParams<{ id: string }>()
+  console.log(params)
+
   const table = useReactTable({
     data,
     columns,
@@ -145,7 +149,7 @@ export default function Page() {
       try {
         const response = await fetchClient({
           method: "GET",
-          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/transactions/1?limit=${limit}`,
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/transactions/${params.id}?limit=${limit}`,
         })
         const data = await response.json()
         setData(data)

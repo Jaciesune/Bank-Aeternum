@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        // Default user
+        // Admin
         $adminAddress = Address::factory()->create();
         $adminUser = User::factory()->create([
             'first_name' => 'Developer',
@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt(env('PASSWORD_SALT', '') . self::DEVELOPER_PASSWORD),
             'address_id' => $adminAddress->id,
         ]);
+
+        Notification::factory()->count(7)->create(['user_id' => $adminUser->id]);
 
         for ($i = 0; $i < 5; $i++) {
             $account = Account::factory()->create();
@@ -41,14 +43,6 @@ class DatabaseSeeder extends Seeder
                 $transaction->from_account()->associate($account);
                 $transaction->save();
             }
-
-            // notification with title: Caryca rób backend! i content śmieszny
-            Notification::factory()->create([
-                'user_id' => $adminUser->id,
-                'title' => 'Caryca rób backend!',
-                'content' => 'Brakuje Ci backendu? Zaprogramuj go sam!',
-            ]);
-            Notification::factory()->count(5)->create(['user_id' => $adminUser->id]);
 
             $loans = Loan::factory()->count(5)->create();
             foreach ($loans as $loan) {

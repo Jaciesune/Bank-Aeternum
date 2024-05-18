@@ -12,3 +12,12 @@ export const jwt = {
     return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString())
   },
 }
+
+export function formatBankAccountNumber(bankAccountNumber: string) {
+  const firstTwoDigits = bankAccountNumber.slice(0, 2)
+  const restOfNumber = bankAccountNumber.slice(2)
+
+  const formattedRest = restOfNumber.replace(/(\d{4})(?=\d)/g, "$1 ")
+
+  return firstTwoDigits + " " + formattedRest
+}
