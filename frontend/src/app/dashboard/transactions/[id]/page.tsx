@@ -63,10 +63,9 @@ export const columns: ColumnDef<Transaction>[] = [
     header: () => <div className="text-right">Kwota</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
-      const currency = row.getValue("currency")
 
       return <div className="text-right font-medium">
-        
+        {amount} 
       </div>
     },
   },
