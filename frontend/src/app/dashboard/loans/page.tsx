@@ -1,6 +1,5 @@
 "use client"
 
-import axios from "axios"
 import { FilePlus2 } from "lucide-react"
 import { EllipsisVertical, Plus } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -66,8 +65,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { NewLoanModal } from "./new-loan-modal"
 
+import { NewLoanModal } from "./new-loan-modal"
 
 export default function Page() {
   const [loans, setLoans] = useState<Loan[]>([])
@@ -130,11 +129,11 @@ export default function Page() {
                         </DropdownMenu>
                       </CardHeader>
                       <CardContent>
-                        <div className="text-xl mb-2 font-bold">
+                        <div className="mb-2 text-xl font-bold">
                           Miesięcy do spłaty: {loan.duration}
                         </div>
                         <Badge variant="outline">
-                           Oprocentowanie {loan.interest_rate}%
+                          Oprocentowanie {loan.interest_rate}%
                         </Badge>
                       </CardContent>
                     </Card>

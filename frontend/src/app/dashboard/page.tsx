@@ -6,9 +6,8 @@ import { EmblaCarouselType } from "embla-carousel"
 import { EllipsisVertical, Plus } from "lucide-react"
 import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
-import { DollarSign } from "react-feather"
 
-import { Account, Transaction, Notification } from "@/types"
+import { Account, Notification, Transaction } from "@/types"
 
 import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
@@ -52,8 +51,6 @@ import {
 } from "@/components/ui/table"
 
 import { DotButton, useDotButton } from "./dots"
-
-
 
 const Page = () => {
   const [api, setApi] = useState<CarouselApi>()
@@ -281,8 +278,11 @@ const Page = () => {
                         <TableCell>{transaction.id}</TableCell>
                         <TableCell>{transaction.status}</TableCell>
                         <TableCell
-                          className={cn("uppercase",
-                            incoming ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+                          className={cn(
+                            "uppercase",
+                            incoming
+                              ? "text-green-600 dark:text-green-500"
+                              : "text-red-600 dark:text-red-500"
                           )}
                         >
                           {incoming ? "+" : "-"}
