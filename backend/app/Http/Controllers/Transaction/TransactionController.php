@@ -4,19 +4,23 @@ namespace App\Http\Controllers\Transaction;
 
 use App\Actions\Transaction\CreateTransaction;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Transactions\TransactionResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Account;
 
 class TransactionController extends Controller
 {
-    public function show($account_id, Request $request): JsonResponse
+    public function index($account_id, Request $request)
     {
         $limit = $request->query('limit', 10);
         $account = Account::findOrFail($account_id);
-        $transactions = $account->transactions()->sortByDesc('created_at')->take($limit);
-        return response()->json($transactions);
+        $transactions = $account->transactions()
+            ->orderByDesc('created_at')
+            ->take($limit)
+            ->get();
+
+        return TransactionResource::collection($transactions);
     }
 
     public function create(Request $request, CreateTransaction $createTransaction): JsonResponse
@@ -32,7 +36,7 @@ class TransactionController extends Controller
         }
 
         if ($name === 'tax' || $name === 'ticket') {
-            $title = 'tmp';   
+            $title = 'tmp';
         }
 
         $createTransaction(

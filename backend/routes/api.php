@@ -15,10 +15,10 @@ Route::middleware('auth:api')->group(function () {
         ->name('user.show');
 
     Route::get('/account', [AccountController::class, 'index'])
-        ->name('account.');
+        ->name('account');
 
-    Route::get('/transactions/{account_id}', [TransactionController::class, 'show'])
-        ->name('transactions.show');
+    Route::get('/transactions/{account_id}', [TransactionController::class, 'index'])
+        ->name('transactions');
 
     Route::post('transfer', [TransactionController::class, 'create'])
         ->name('transfer');
