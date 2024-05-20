@@ -281,12 +281,12 @@ const Page = () => {
                         <TableCell>{transaction.id}</TableCell>
                         <TableCell>{transaction.status}</TableCell>
                         <TableCell
-                          className={cn(
+                          className={cn("uppercase",
                             incoming ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
                           )}
                         >
                           {incoming ? "+" : "-"}
-                          {transaction.amount} {transaction.currency}
+                          {transaction.amount.toFixed(2)} {transaction.currency}
                         </TableCell>
                         <TableCell className="text-right">
                           {format(transaction.created_at, "dd.MM.yyyy HH:mm")}
