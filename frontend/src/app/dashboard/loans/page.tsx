@@ -1,5 +1,6 @@
 "use client"
 
+import axios from "axios"
 import { FilePlus2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -12,6 +13,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+
+import { Loan } from "@/types"
+
+import fetchClient from "@/lib/fetch-client"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -73,6 +78,7 @@ const INTEREST_RATE = 9.9
 const APR = 12.28
 
 export default function Page() {
+  const [loans, setLoans] = useState<Loan[]>([])
   const [goal, setGoal] = useState(350)
   const [data, setData] = useState<ChartData[]>([])
   const [totalCost, setTotalCost] = useState(0)
@@ -91,6 +97,23 @@ export default function Page() {
       down_payment: 0,
     },
   })
+
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        const response = await fetchClient({
+          method: "GET",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/loan`,
+        })
+        const data = await response.json()
+        setLoans(data)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+
+    fetchLoans()
+  }, [])
 
   // Ensure that down payment is not higher than half of the loan amount
   useEffect(() => {
@@ -169,6 +192,37 @@ export default function Page() {
   return (
     <div>
       <h1 className="my-4 text-4xl font-semibold">Kredyty</h1>
+
+      {/* Render the loan data */}
+      <div className="my-4">
+        <h2 className="text-2xl font-semibold">Twoje Kredyty</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Kwota</TableCell>
+              <TableCell>Oprocentowanie</TableCell>
+              <TableCell>Czas trwania</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Data utworzenia</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loans.map((loan) => (
+              <TableRow key={loan.id}>
+                <TableCell>{loan.id}</TableCell>
+                <TableCell>{loan.amount} zł</TableCell>
+                <TableCell>{loan.interest_rate}%</TableCell>
+                <TableCell>{loan.duration} miesięcy</TableCell>
+                <TableCell>{loan.status}</TableCell>
+                <TableCell>
+                  {new Date(loan.created_at).toLocaleDateString()}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       <Form {...form}>
         <form>

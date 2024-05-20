@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Loan\LoanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\Notification\NotificationController;
@@ -24,9 +25,12 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('notification', [NotificationController::class, 'index'])
         ->name('notification');
-    
+
     Route::get('tax-office', [TaxOfficeController::class, 'index'])
         ->name('taxOffice');
+
+    Route::get('loan', [LoanController::class, 'index'])
+        ->name('loan');
 });
 
 Route::middleware(['auth:api', 'verified'])->group(function () {

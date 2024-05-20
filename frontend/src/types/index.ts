@@ -23,3 +23,13 @@ export type TaxOffice = {
   bank_account_type: string
   bank_account_number: string
 }
+
+export type Loan = {
+  id: number
+  user_id: number
+  amount: number
+  interest_rate: number
+  duration: number
+  status: string
+  created_at: string
+}
