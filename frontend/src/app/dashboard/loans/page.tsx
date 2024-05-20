@@ -196,7 +196,7 @@ export default function Page() {
             </Table>
           </CardContent>
           <CardFooter>
-            <Button>Pokaż więcej</Button>
+            <Button disabled>Pokaż więcej</Button>
           </CardFooter>
         </Card>
       </div>
