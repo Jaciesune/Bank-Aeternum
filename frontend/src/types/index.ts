@@ -33,3 +33,29 @@ export type Loan = {
   status: string
   created_at: string
 }
+
+export type Status = "pending" | "success" | "failed"
+export type TransactionType = "domestic" | "own" | "ticket" | "tax" | "foreign"
+
+export type Transaction = {
+  id: number
+  title: string
+  amount: number
+  currency: string
+  type: TransactionType
+  from_account: string
+  to_account: string
+  status: Status
+  created_at: string
+  updated_at: string
+  user_id: string
+  account_id: string
+}
+
+export type Notification = {
+  id: number
+  title: string
+  content: string
+  created_at: string
+  read: boolean
+}
