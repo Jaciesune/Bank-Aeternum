@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Addressess;
 
-use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

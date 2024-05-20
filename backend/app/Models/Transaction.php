@@ -33,6 +33,11 @@ class Transaction extends Model
         return $this->belongsTo(Account::class, 'from_account', 'account_number');
     }
 
+    public function get()
+    {
+        return $this->all();
+    }
+
     public function to_account()
     {
         return $this->belongsTo(Account::class, 'to_account', 'account_number');

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Account extends Model
 {
@@ -30,11 +31,17 @@ class Account extends Model
         return $this->hasMany(Transaction::class, "to_account", "account_number");
     }
 
-    public function transactions()
-    {
-        $sent = $this->sent_transactions;
-        $recieved = $this->recieved_transactions;
+    // public function transactions()
+    // {
+    //     $sent = $this->sent_transactions;
+    //     $recieved = $this->recieved_transactions;
 
-        return $sent->merge($recieved);
+    //     return $sent->merge($recieved);
+    // }
+
+    public function transactions(): Builder
+    {
+        return Transaction::where('from_account', $this->account_number)
+            ->orWhere('to_account', $this->account_number);
     }
 }

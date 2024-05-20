@@ -22,7 +22,7 @@ class Notification extends Model
         'created_at' => 'datetime',
     ];
 
-    public function get(){
+    public function get() {
         return $this->all();
     }
 

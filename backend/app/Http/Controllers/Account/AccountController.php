@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Accounts\AccountResource;
-use App\Http\Resources\TransactionsResource;
 use App\Models\Account;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use App\Http\Requests\Users\TransactionRequest;
 use App\Services\CurrencyExchange;
 
 class AccountController extends Controller
