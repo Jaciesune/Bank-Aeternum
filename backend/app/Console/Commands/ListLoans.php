@@ -22,7 +22,7 @@ class ListLoans extends Command
                     $loan->id,
                     $loan->user_id,
                     $loan->amount,
-                    $loan->interest,
+                    $loan->interest_rate,
                     $loan->duration,
                     $loan->status,
                     $loan->created_at,

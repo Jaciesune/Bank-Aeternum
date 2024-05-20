@@ -19,10 +19,10 @@ class LoanResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'amount' => $this->amount,
-            'interest' => $this->interest,
+            'interest_rate' => $this->interest_rate,
             'duration' => $this->duration,
             'status' => $this->status,
             'created_at' => $this->created_at
         ];
-    }  
+    }
 }
