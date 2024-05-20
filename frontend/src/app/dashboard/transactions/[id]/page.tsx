@@ -17,6 +17,8 @@ import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
+import type { Transaction } from "@/types"
+
 import fetchClient from "@/lib/fetch-client"
 
 import { Button } from "@/components/ui/button"
@@ -42,20 +44,6 @@ import {
 
 import TransactionDetails from "./transation-details"
 
-type Transaction = {
-  id: number
-  amount: number
-  currency?: string
-  created_at: string
-  account_id: number
-  type: "domestic" | "own" | "ticket" | "tax" | "foreign"
-  status: "pending" | "success" | "failed"
-  title: string
-  reference?: string
-  from_account: string
-  to_account: string
-}
-
 export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "title",
@@ -75,14 +63,11 @@ export const columns: ColumnDef<Transaction>[] = [
     header: () => <div className="text-right">Kwota</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
+      const currency = row.getValue("currency")
 
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-right font-medium">
+        
+      </div>
     },
   },
   {

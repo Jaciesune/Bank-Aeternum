@@ -8,7 +8,7 @@ import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
 import { DollarSign } from "react-feather"
 
-import { Account } from "@/types"
+import { Account, Transaction, Notification } from "@/types"
 
 import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
@@ -53,27 +53,7 @@ import {
 
 import { DotButton, useDotButton } from "./dots"
 
-type Transaction = {
-  id: number
-  amount: number
-  currency?: string
-  created_at: string
-  account_id: number
-  type: string
-  status: string
-  title: string
-  reference?: string
-  user: string
-  account: string
-}
 
-type Notification = {
-  id: number
-  title: string
-  content: string
-  created_at: string
-  read: boolean
-}
 
 const Page = () => {
   const [api, setApi] = useState<CarouselApi>()
@@ -291,16 +271,29 @@ const Page = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {transactions.map((transaction) => (
-                    <TableRow key={transaction.id}>
-                      <TableCell>{transaction.id}</TableCell>
-                      <TableCell>{transaction.status}</TableCell>
-                      <TableCell>{transaction.amount}</TableCell>
-                      <TableCell className="text-right">
-                        {format(transaction.created_at, "dd.MM.yyyy HH:mm")}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {transactions.map((transaction) => {
+                    const incoming =
+                      transaction.to_account ==
+                      accounts[selectedIndex].account_number
+
+                    return (
+                      <TableRow key={transaction.id}>
+                        <TableCell>{transaction.id}</TableCell>
+                        <TableCell>{transaction.status}</TableCell>
+                        <TableCell
+                          className={cn(
+                            incoming ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+                          )}
+                        >
+                          {incoming ? "+" : "-"}
+                          {transaction.amount} {transaction.currency}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {format(transaction.created_at, "dd.MM.yyyy HH:mm")}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
             ) : (

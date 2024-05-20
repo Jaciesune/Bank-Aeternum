@@ -13,20 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-
-type Transaction = {
-  id: number
-  amount: number
-  currency?: string
-  created_at: string
-  account_id: number
-  type: "domestic" | "own" | "ticket" | "tax" | "foreign"
-  status: "pending" | "success" | "failed"
-  title: string
-  reference?: string
-  from_account: string
-  to_account: string
-}
+import type { Transaction } from "@/types"
 
 type TransactionDetailsProps = {
   transaction: Transaction
