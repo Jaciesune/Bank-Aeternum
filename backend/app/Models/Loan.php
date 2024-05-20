@@ -35,7 +35,7 @@ class Loan extends Model
         return $this->all();
     }
 
-    public function from_user(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
