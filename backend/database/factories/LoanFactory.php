@@ -20,7 +20,7 @@ class LoanFactory extends Factory
             'amount' => $this->faker->randomFloat(2, 0, 10000),
             'interest_rate' => $this->faker->randomFloat(2, 0, 100),
             'duration' => $this->faker->randomDigit,
-            'status' => $this->faker->randomElement(['pending', 'completed', 'failed']),
+            'status' => $this->faker->randomElement(['paid', 'unpaid']),
             'user_id' => $this->faker->randomDigit,
             'currency' => $this->faker->randomElement(['USD', 'EUR', 'GBP', 'PLN']),
             'installment' => $this->faker->randomFloat(2, 0, 10000),
