@@ -1,12 +1,15 @@
 "use client"
 
 import * as yup from "yup"
+import SubmitButton from "@/components/shared/submit-button"
+import useDataFetching from "@/hooks/useDataFetching"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
-import { useEffect, useState } from "react"
+import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
+
+import { Account } from "@/types"
 
 import fetchClient from "@/lib/fetch-client"
 import { cn, formatBankAccountNumber } from "@/lib/utils"
@@ -25,28 +28,23 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { AccountsSelect } from "@/components/fields/accounts-select"
 
 import { symbols, taxOffices } from "./data"
-import SubmitButton from "./submit-button"
 
 type FormValues = {
   form_symbol: string
@@ -95,24 +93,8 @@ export function TaxTransferForm() {
     resolver: yupResolver(schema),
     mode: "onTouched",
   })
-  const [accounts, setAccounts] = useState([])
 
-  async function fetchAccounts() {
-    try {
-      const response = await fetchClient({
-        method: "GET",
-        url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
-      })
-      const data = await response.json()
-      setAccounts(data)
-    } catch (error) {
-      console.error("Error fetching accounts:", error)
-    }
-  }
-
-  useEffect(() => {
-    fetchAccounts()
-  }, [])
+  const { data: accounts } = useDataFetching<Account[]>("/api/account")
 
   async function onSubmit({
     form_symbol,
@@ -265,7 +247,7 @@ export function TaxTransferForm() {
                 <FormControl>
                   <AccountsSelect
                     placeholder="Nie wybrano konta."
-                    accounts={accounts}
+                    accounts={accounts || []}
                     onChangeValue={field.onChange}
                     selectedValue={field.value}
                   />

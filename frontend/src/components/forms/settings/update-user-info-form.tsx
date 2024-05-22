@@ -1,9 +1,8 @@
 "use client"
 
 import * as yup from "yup"
+import SubmitButton from "@/components/shared/submit-button"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { error } from "console"
-import { Loader2 } from "lucide-react"
 import type { User } from "next-auth"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -12,7 +11,6 @@ import { toast } from "sonner"
 
 import fetchClient from "@/lib/fetch-client"
 
-import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -339,21 +337,11 @@ export default function UpdateUserForm({ user }: UpdateUserFormProps) {
           />
         </div>
 
-        <Button
-          disabled={
-            form.formState.isSubmitting ||
-            !form.formState.isDirty ||
-            !form.formState.isValid
-          }
-          className="mt-4"
-          type="submit"
-        >
-          {form.formState.isSubmitting && (
-            <Loader2 className="mr-2 size-4 animate-spin" />
-          )}
-
-          {form.formState.isSubmitting ? "Aktualizuję dane" : "Aktualizuj dane"}
-        </Button>
+        <SubmitButton
+          form={form}
+          loadingText="Aktualizuję dane"
+          buttonText="Aktualizuj dane"
+        />
       </form>
     </Form>
   )

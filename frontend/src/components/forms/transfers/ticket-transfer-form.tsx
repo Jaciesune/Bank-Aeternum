@@ -1,9 +1,10 @@
 "use client"
 
+import SubmitButton from "@/components/shared/submit-button"
+import useDataFetching from "@/hooks/useDataFetching"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
-import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import type { Account } from "@/types"
@@ -34,8 +35,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { AccountsSelect } from "@/components/fields/accounts-select"
 
-import SubmitButton from "./submit-button"
-
 type FormValues = {
   form_symbol: string
   tax_office_account_number: string
@@ -44,7 +43,7 @@ type FormValues = {
   amount: string
   date: Date
   type_of_transfer: string
-  name: 'ticket'
+  name: "ticket"
 }
 
 export function TicketTransferForm() {
@@ -59,24 +58,8 @@ export function TicketTransferForm() {
       type_of_transfer: "standard",
     },
   })
-  const [accounts, setAccounts] = useState<Account[]>([])
 
-  async function fetchAccounts() {
-    try {
-      const response = await fetchClient({
-        method: "GET",
-        url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
-      })
-      const data = await response.json()
-      setAccounts(data)
-    } catch (error) {
-      console.error("Error fetching accounts:", error)
-    }
-  }
-
-  useEffect(() => {
-    fetchAccounts()
-  }, [])
+  const { data: accounts } = useDataFetching<Account[]>("/api/account")
 
   async function onSubmit(data: FormValues) {
     try {
@@ -175,7 +158,7 @@ export function TicketTransferForm() {
                 <FormControl>
                   <AccountsSelect
                     placeholder="Nie wybrano konta."
-                    accounts={accounts}
+                    accounts={accounts || []}
                     onChangeValue={field.onChange}
                     selectedValue={field.value}
                   />

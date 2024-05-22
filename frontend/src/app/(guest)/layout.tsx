@@ -1,24 +1,10 @@
-import GuestNavigation from "@/components/guest-navigation"
-import { ModeToggle } from "@/components/mode-theme"
-import Link from "next/link"
+import Header from "@/components/layout/header"
+import LoginRegisterNavigation from "@/components/layout/login-register-navigation"
 
-interface GuestLayoutProps {
-  children?: React.ReactNode
-}
-
-export default function GuestLayout({ children }: GuestLayoutProps) {
+export default function GuestLayout({ children }: React.PropsWithChildren) {
   return (
     <>
-      <header className="flex items-center justify-between space-x-2 p-4 shadow-lg">
-        <Link href="/" className="mr-auto">
-          Bank Aeternum
-        </Link>
-
-        <GuestNavigation />
-
-        <ModeToggle />
-      </header>
-
+      <Header navigation={<LoginRegisterNavigation />} />
       <main>{children}</main>
     </>
   )

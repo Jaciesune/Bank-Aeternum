@@ -1,12 +1,13 @@
 "use client"
 
 import * as yup from "yup"
+import SubmitButton from "@/components/shared/submit-button"
+import useDataFetching from "@/hooks/useDataFetching"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Label } from "@radix-ui/react-label"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
-import { CalendarIcon, Loader2, RotateCcw } from "lucide-react"
-import { useEffect, useState } from "react"
+import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -36,8 +37,6 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { AccountsSelect } from "@/components/fields/accounts-select"
-
-import SubmitButton from "./submit-button"
 
 type TypeOfTransfer = "standard" | "express"
 
@@ -92,7 +91,6 @@ export function DomesticTransferForm() {
     resolver: yupResolver(schema),
     mode: "onTouched",
   })
-  const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
     to_account,
@@ -130,22 +128,7 @@ export function DomesticTransferForm() {
     }
   }
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const response = await fetchClient({
-          method: "GET",
-          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
-        })
-        const data = await response.json()
-        setAccounts(data)
-      } catch (error) {
-        console.error("Error fetching data:", error)
-      }
-    }
-
-    fetchAccounts()
-  }, [])
+  const { data: accounts, loading } = useDataFetching<Account[]>("/api/account")
 
   return (
     <Form {...form}>
@@ -161,7 +144,7 @@ export function DomesticTransferForm() {
                 <FormControl>
                   <AccountsSelect
                     placeholder="Nie wybrano konta."
-                    accounts={accounts}
+                    accounts={accounts || []}
                     onChangeValue={field.onChange}
                     selectedValue={field.value}
                   />

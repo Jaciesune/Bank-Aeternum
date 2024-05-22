@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import SubmitButton from "@/components/shared/submit-button"
 import { FilePlus2 } from "lucide-react"
 import { useEffect, useState } from "react"
-import { type UseFormReturn, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -57,8 +59,8 @@ const APR = 12.28
 export const NewLoanModal = () => {
   const form = useForm<FormValues>({
     defaultValues: {
-      amount: 30000,
-      duration: 12,
+      amount: 0,
+      duration: 1,
       installment_type: "Raty równe",
       down_payment: 0,
     },
@@ -138,7 +140,7 @@ export const NewLoanModal = () => {
         <Drawer>
           <DrawerTrigger asChild>
             <Button variant="outline">
-              <FilePlus2 className="mr-2 h-4 w-4" />
+              <FilePlus2 className="mr-2 size-4" />
               Nowy kredyt
             </Button>
           </DrawerTrigger>
@@ -285,7 +287,13 @@ export const NewLoanModal = () => {
                 <DrawerClose asChild>
                   <Button variant="outline">Anuluj</Button>
                 </DrawerClose>
-                <Button>Weź kredyt</Button>
+
+                <SubmitButton
+                  form={form}
+                  className="flex items-center space-x-2"
+                  loadingText="Wnioskowanie o kredyt..."
+                  buttonText="Złóż wniosek"
+                />
               </DrawerFooter>
             </div>
           </DrawerContent>

@@ -1,15 +1,13 @@
 "use client"
 
-import { FilePlus2 } from "lucide-react"
+import useDataFetching from "@/hooks/useDataFetching"
 import { EllipsisVertical, Plus } from "lucide-react"
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
 
 import { Loan } from "@/types"
 
 import { DotButton, useDotButton } from "@/app/dashboard/dots"
 
-import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
 
 import { Badge } from "@/components/ui/badge"
@@ -30,38 +28,15 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
@@ -69,38 +44,19 @@ import {
 import { NewLoanModal } from "./new-loan-modal"
 
 export default function Page() {
-  const [loans, setLoans] = useState<Loan[]>([])
-  const [goal, setGoal] = useState(350)
   const [api, setApi] = useState<CarouselApi>()
-  const [totalCost, setTotalCost] = useState(0)
 
   const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(api)
 
-  useEffect(() => {
-    const fetchLoans = async () => {
-      try {
-        const response = await fetchClient({
-          method: "GET",
-          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/loan`,
-        })
-        const data = await response.json()
-        setLoans(data)
-      } catch (error) {
-        console.error("Error fetching data:", error)
-      }
-    }
+  const { data: loans } = useDataFetching<Loan[]>("/api/loan")
 
-    fetchLoans()
-  }, [])
-
-  const paidLoans = loans.filter((loan) => loan.status === "paid")
-  const unpaidLoans = loans.filter((loan) => loan.status === "unpaid")
+  const paidLoans = loans?.filter((loan) => loan.status === "paid") || []
+  const unpaidLoans = loans?.filter((loan) => loan.status === "unpaid") || []
 
   return (
     <div>
       <h1 className="my-6 text-4xl font-semibold">Kredyty</h1>
 
-      {/* Render the loan data */}
       <div className="my-4 space-y-4">
         <Card className="col-span-3">
           <CardHeader className="flex flex-row items-center justify-between">

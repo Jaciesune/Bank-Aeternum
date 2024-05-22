@@ -1,5 +1,7 @@
 "use client"
 
+import Status from "@/components/shared/status"
+import useDataFetching from "@/hooks/useDataFetching"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -15,21 +17,15 @@ import {
 import { format } from "date-fns"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import type { Transaction } from "@/types"
 
-import fetchClient from "@/lib/fetch-client"
-
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -54,7 +50,9 @@ export const columns: ColumnDef<Transaction>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="capitalize">
+        <Status status={row.getValue("status")} />
+      </div>
     ),
   },
 
@@ -64,9 +62,7 @@ export const columns: ColumnDef<Transaction>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
 
-      return <div className="text-right font-medium">
-        {amount} 
-      </div>
+      return <div className="text-right font-medium">{amount}</div>
     },
   },
   {
@@ -104,13 +100,14 @@ export default function Page() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState<Transaction[]>([])
 
   const params = useParams<{ id: string }>()
-  console.log(params)
+  const { data } = useDataFetching<Transaction[]>(
+    `/api/transactions/${params.id}?limit=100`
+  )
 
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -128,28 +125,11 @@ export default function Page() {
     },
   })
 
-  useEffect(() => {
-    const fetchTransactions = async (limit: number = 100) => {
-      try {
-        const response = await fetchClient({
-          method: "GET",
-          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/transactions/${params.id}?limit=${limit}`,
-        })
-        const data = await response.json()
-        setData(data)
-      } catch (error) {
-        console.error("Error fetching data:", error)
-      }
-    }
-
-    fetchTransactions()
-  }, [])
-
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filtruj tytuły..."
+          placeholder="Filtruj po tytule..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
@@ -159,7 +139,7 @@ export default function Page() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 size-4" />
+              Kolumny <ChevronDown className="ml-2 size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

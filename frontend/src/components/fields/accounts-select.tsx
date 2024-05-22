@@ -1,9 +1,8 @@
 import { Check } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { Account } from "@/types"
 
-import fetchClient from "@/lib/fetch-client"
 import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"

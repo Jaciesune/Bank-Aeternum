@@ -1,11 +1,12 @@
 "use client"
 
 import * as yup from "yup"
+import SubmitButton from "@/components/shared/submit-button"
+import useDataFetching from "@/hooks/useDataFetching"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
-import { CalendarIcon, Loader2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -34,8 +35,6 @@ import {
 } from "@/components/ui/popover"
 
 import { AccountsSelect } from "@/components/fields/accounts-select"
-
-import SubmitButton from "./submit-button"
 
 type FormValues = {
   to_account: string
@@ -82,7 +81,6 @@ export function OwnTransferForm() {
     resolver: yupResolver(schema),
     mode: "onTouched",
   })
-  const [accounts, setAccounts] = useState<Account[]>([])
 
   async function onSubmit({
     to_account,
@@ -117,22 +115,7 @@ export function OwnTransferForm() {
     }
   }
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const response = await fetchClient({
-          method: "GET",
-          url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
-        })
-        const data = await response.json()
-        setAccounts(data)
-      } catch (error) {
-        console.error("Error fetching data:", error)
-      }
-    }
-
-    fetchAccounts()
-  }, [])
+  const { data: accounts } = useDataFetching<Account[]>("/api/account")
 
   return (
     <Form {...form}>
@@ -148,10 +131,13 @@ export function OwnTransferForm() {
                 <FormControl>
                   <AccountsSelect
                     placeholder="Nie wybrano konta."
-                    accounts={accounts.filter(
-                      (account) =>
-                        account.account_number !== form.getValues("to_account")
-                    )}
+                    accounts={
+                      accounts?.filter(
+                        (account) =>
+                          account.account_number !==
+                          form.getValues("to_account")
+                      ) || []
+                    }
                     onChangeValue={field.onChange}
                     selectedValue={field.value}
                   />
@@ -174,11 +160,13 @@ export function OwnTransferForm() {
                 <FormControl>
                   <AccountsSelect
                     placeholder="Nie wybrano konta."
-                    accounts={accounts.filter(
-                      (account) =>
-                        account.account_number !==
-                        form.getValues("from_account")
-                    )}
+                    accounts={
+                      accounts?.filter(
+                        (account) =>
+                          account.account_number !==
+                          form.getValues("from_account")
+                      ) || []
+                    }
                     onChangeValue={field.onChange}
                     selectedValue={field.value}
                   />

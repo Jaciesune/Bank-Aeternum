@@ -1,5 +1,3 @@
-import { getCurrentUser } from "@/lib/session"
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { DomesticTransferForm } from "@/components/forms/transfers/domestic-transfer-form"
@@ -16,8 +14,6 @@ const tabs = [
 ]
 
 export default async function Page() {
-  const user = await getCurrentUser()
-
   return (
     <div>
       <h1 className="my-4 text-4xl font-semibold">Przelewy</h1>

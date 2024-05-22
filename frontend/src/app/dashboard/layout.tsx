@@ -1,24 +1,10 @@
-import { ModeToggle } from "@/components/mode-theme"
-import UserNavigation from "@/components/user-navigation"
-import Link from "next/link"
+import Header from "@/components/layout/header"
+import UserNavigation from "@/components/layout/user-navigation"
 
-interface DashboardLayoutProps {
-  children?: React.ReactNode
-}
-
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({ children }: React.PropsWithChildren) {
   return (
     <div>
-      <header className="flex items-center justify-between space-x-2 p-4 shadow-lg">
-        <Link href="/" className="mr-auto">
-          Bank Aeternum
-        </Link>
-
-        <UserNavigation />
-
-        <ModeToggle />
-      </header>
-
+      <Header navigation={<UserNavigation />} />
       <main className="container mt-6">{children}</main>
     </div>
   )

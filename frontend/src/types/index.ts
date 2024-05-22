@@ -34,7 +34,7 @@ export type Loan = {
   created_at: string
 }
 
-export type Status = "pending" | "success" | "failed"
+export type Status = "pending" | "completed" | "failed"
 export type TransactionType = "domestic" | "own" | "ticket" | "tax" | "foreign"
 
 export type Transaction = {

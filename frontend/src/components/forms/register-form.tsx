@@ -36,6 +36,8 @@ import {
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 
+import SubmitButton from "../shared/submit-button"
+
 type FormValues = {
   first_name: string
   last_name: string
@@ -115,13 +117,6 @@ export default function RegisterForm() {
         }
 
         console.log(response.errors)
-        // return Object.keys(response.errors).map((errorKey) => {
-        //   const input = document.querySelector(
-        //     `[name="${errorKey}"]`
-        //   ) as HTMLInputElement
-        //   input.setCustomValidity(response.errors[errorKey])
-        //   input.reportValidity()
-        // })
       }
 
       throw new Error("An error has occurred during registration request")
@@ -431,9 +426,12 @@ export default function RegisterForm() {
 
         {/* Submit button */}
         <CardFooter>
-          <Button className="w-full" type="submit">
-            Zarejestruj się
-          </Button>
+          <SubmitButton
+            form={form}
+            className="w-full"
+            loadingText="Rejestracja"
+            buttonText="Zarejestruj się"
+          />
         </CardFooter>
       </form>
     </Form>
