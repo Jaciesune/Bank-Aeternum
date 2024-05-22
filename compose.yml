@@ -1,0 +1,30 @@
+services:    
+  frontend:
+    build: frontend/
+    env_file:
+      - path: ./dockerenv
+        required: true
+    network_mode: "service:backend"
+    volumes:
+      - "./frontend:/app"
+    ports:
+      - 3000:3000
+  
+  backend:
+    build: backend/
+    env_file:
+      - path: ./dockerenv
+        required: true
+    network_mode: "host"
+    volumes:
+      - "./backend:/var/www/html"
+    ports:
+      - 8000:8000
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: laravel
+      MARIADB_USER: laravel
+      MARIADB_PASSWORD: laravel

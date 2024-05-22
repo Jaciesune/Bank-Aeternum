@@ -8,8 +8,12 @@ use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\Transaction\TransactionController;
 use App\Http\Controllers\TaxOffice\TaxOfficeController;
 
-require __DIR__ . '/auth.php';
 
+Route::get("/check", function() {
+    return "very ok";
+});
+
+require __DIR__ . '/auth.php';
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', [UserController::class, 'show'])
         ->name('user.show');
