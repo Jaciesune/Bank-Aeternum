@@ -114,7 +114,7 @@ export default function TransactionsHistory({
                         )}
                       >
                         {incoming ? "+" : "-"}
-                        {transaction.amount.toFixed(2)} {transaction.currency}
+                        {transaction.amount} {transaction.currency}
                       </TableCell>
                       <TableCell className="text-right">
                         {format(transaction.created_at, "dd.MM.yyyy HH:mm")}
