@@ -6,15 +6,13 @@ use App\Models\AccountUser;
 
 class CreateAccountUser
 {
-    public function __invoke(
-        $account_id,
-        $user_id
-    ): AccountUser {
-        $account_user = AccountUser::create([
+    public function __invoke($account_id, $user_id): AccountUser
+    {
+        $accountUser = AccountUser::create([
             'account_id' => $account_id,
             'user_id' => $user_id,
         ]);
 
-        return $account_user;
+        return $accountUser;
     }
 }

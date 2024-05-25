@@ -1,8 +1,8 @@
-import SubmitButton from "@/components/shared/submit-button"
-import { Plus } from "lucide-react"
-import { useForm } from "react-hook-form"
-
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import fetchClient from "@/lib/fetch-client";
+import useDataFetching from "@/hooks/useDataFetching";
 import {
   Drawer,
   DrawerClose,
@@ -12,50 +12,79 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Plus } from "lucide-react";
+import { Account } from "next-auth";
 
-type AccountType = "checking" | "savings" | "credit_card"
+type AccountType = "personal" | "savings" | "youth";
 
 type FormValues = {
-  name: string
-  account_type: AccountType
-}
+  name: string;
+  account_type: AccountType;
+};
 
-export default function NewAccountModal() {
+const NewAccountForm: React.FC = () => {
   const form = useForm<FormValues>({
-    defaultValues: {},
-  })
+    defaultValues: {
+      name: "",
+      account_type: "personal",
+    },
+  });
+
+  const { data: accounts, loading, error } = useDataFetching<Account[]>("/api/account");
+
+  const onSubmit = async (values: FormValues) => {
+    try {
+      const response = await fetchClient({
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/account`,
+        body: JSON.stringify({
+          name: values.name,
+          type: values.account_type,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      toast.success("Konto zostało otwarte pomyślnie.");
+      form.reset();
+    } catch (error) {
+      toast.error("Wystąpił błąd podczas otwierania konta.");
+    }
+  };
 
   return (
     <Form {...form}>
-      <form>
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button variant="outline">
-              <Plus className="mr-2 size-4" />
-              Nowe konto
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <div className="mx-auto w-full max-w-lg">
-              <DrawerHeader>
-                <DrawerTitle>Otwórz nowe konto</DrawerTitle>
-                <DrawerDescription>
-                  Wypełnij formularz, aby otworzyć nowe konto.
-                </DrawerDescription>
-              </DrawerHeader>
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="outline">
+            <Plus className="mr-2 size-4" />
+            Nowe konto
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <div className="mx-auto w-full max-w-lg">
+            <DrawerHeader>
+              <DrawerTitle>Otwórz nowe konto</DrawerTitle>
+              <DrawerDescription>
+                Wypełnij formularz, aby otworzyć nowe konto.
+              </DrawerDescription>
+            </DrawerHeader>
 
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="space-y-4 p-4">
                 <FormField
                   control={form.control}
@@ -66,7 +95,6 @@ export default function NewAccountModal() {
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-                      <FormDescription></FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -79,7 +107,10 @@ export default function NewAccountModal() {
                     <FormItem>
                       <FormLabel>Typ konta</FormLabel>
                       <FormControl>
-                        <RadioGroup {...field}>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
                           <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="personal" />
@@ -108,7 +139,6 @@ export default function NewAccountModal() {
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
-                      <FormDescription></FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -118,17 +148,14 @@ export default function NewAccountModal() {
                 <DrawerClose asChild>
                   <Button variant="outline">Anuluj</Button>
                 </DrawerClose>
-                <SubmitButton
-                  form={form}
-                  className="flex items-center space-x-2"
-                  loadingText="Otwieranie konta..."
-                  buttonText="Otwórz konto"
-                />
+                <Button type="submit">Otwórz konto</Button>
               </DrawerFooter>
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </form>
+            </form>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </Form>
-  )
-}
+  );
+};
+
+export default NewAccountForm;

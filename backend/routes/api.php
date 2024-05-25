@@ -21,6 +21,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/account', [AccountController::class, 'index'])
         ->name('account');
 
+    Route::post('/account', [AccountController::class, 'create'])
+        ->name('account.create');
+
     Route::get('/transactions/{account_id}', [TransactionController::class, 'index'])
         ->name('transactions');
 
