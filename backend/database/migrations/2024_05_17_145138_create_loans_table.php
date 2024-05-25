@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('installment_id')->nullable();
             $table->string('loan_amount')->nullable();
             $table->string('installment_type')->nullable();
+            $table->string('down_payment')->nullable();
         });
     }
 

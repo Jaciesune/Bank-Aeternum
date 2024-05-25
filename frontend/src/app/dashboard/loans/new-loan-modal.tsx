@@ -1,8 +1,12 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import SubmitButton from "@/components/shared/submit-button"
+import axios from "axios"
+import { stat } from "fs"
 import { FilePlus2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+
+import fetchClient from "@/lib/fetch-client"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -56,7 +60,33 @@ type DataTable = {
 const INTEREST_RATE = 9.9
 const APR = 12.28
 
-export const NewLoanModal = () => {
+const calculateMonthlyRate = (
+  amount: number,
+  duration: number,
+  installment_type: string
+): string => {
+  const monthlyInterestRate = INTEREST_RATE / 100 / 12
+  if (installment_type === "Raty równe") {
+    return (
+      (amount * monthlyInterestRate) /
+      (1 - Math.pow(1 + monthlyInterestRate, -duration))
+    ).toFixed(2)
+  }
+  return (amount / duration + amount * monthlyInterestRate).toFixed(2)
+}
+
+const calculateTotalCost = (
+  amount: number,
+  duration: number,
+  installment_type: string
+): number => {
+  const monthlyRate = parseFloat(
+    calculateMonthlyRate(amount, duration, installment_type)
+  )
+  return parseFloat((monthlyRate * duration).toFixed(2))
+}
+
+const NewLoanModal: React.FC = () => {
   const form = useForm<FormValues>({
     defaultValues: {
       amount: 0,
@@ -65,34 +95,40 @@ export const NewLoanModal = () => {
       down_payment: 0,
     },
   })
+
   const [dataTable, setDataTable] = useState<DataTable[]>([
     { label: "Twoja rata miesięczna", value: "636 zł" },
     { label: "RRSO", value: `${APR}%` },
     { label: "Oprocentowanie", value: `${INTEREST_RATE}%` },
     { label: "Ubezpieczenie kredytu", value: "1 188 zł" },
   ])
+
   const [totalCost, setTotalCost] = useState(0)
 
-  // Ensure that down payment is not higher than half of the loan amount
-  useEffect(() => {
-    const currentAmount = form.getValues("amount")
-    const currentDownPayment = form.getValues("down_payment")
-    if (currentDownPayment > currentAmount / 2) {
-      form.setValue("down_payment", currentAmount / 2)
-    }
-  }, [form.getValues("amount")])
+  const { watch, getValues, setValue } = form
+  const amount = watch("amount")
+  const downPayment = watch("down_payment")
 
-  // Calculate monthly rate and total cost
   useEffect(() => {
-    const { amount, duration, installment_type, down_payment } =
-      form.getValues()
-    const loanAmount: number = amount - down_payment
+    const currentAmount = getValues("amount")
+    const currentDownPayment = getValues("down_payment")
+    if (currentDownPayment > currentAmount / 2) {
+      setValue("down_payment", currentAmount / 2)
+    }
+  }, [getValues, setValue])
+
+  useEffect(() => {
+    const loanAmount = amount - downPayment
     const monthlyRate = calculateMonthlyRate(
       loanAmount,
-      duration,
-      installment_type
+      getValues("duration"),
+      getValues("installment_type")
     )
-    const totalCost = calculateTotalCost(loanAmount, duration, installment_type)
+    const totalCost = calculateTotalCost(
+      loanAmount,
+      getValues("duration"),
+      getValues("installment_type")
+    )
 
     setTotalCost(totalCost)
     setDataTable([
@@ -101,59 +137,62 @@ export const NewLoanModal = () => {
       { label: "Oprocentowanie", value: `${INTEREST_RATE}%` },
       { label: "Ubezpieczenie kredytu", value: "1 188 zł" },
     ])
-  }, [
-    form.watch("amount"),
-    form.watch("duration"),
-    form.watch("installment_type"),
-    form.watch("down_payment"),
-  ])
+  }, [amount, downPayment, getValues])
 
-  function calculateMonthlyRate(
-    amount: number,
-    duration: number,
-    installment_type: string
-  ): string {
-    const monthlyInterestRate = INTEREST_RATE / 100 / 12
-    if (installment_type === "Raty równe") {
-      return (
-        (amount * monthlyInterestRate) /
-        (1 - Math.pow(1 + monthlyInterestRate, -duration))
-      ).toFixed(2)
-    }
-    return (amount / duration + amount * monthlyInterestRate).toFixed(2)
-  }
-
-  function calculateTotalCost(
-    amount: number,
-    duration: number,
-    installment_type: string
-  ): number {
-    const monthlyRate = parseFloat(
-      calculateMonthlyRate(amount, duration, installment_type)
+  const onSubmit = async (values: FormValues) => {
+    const loanAmount = values.amount - values.down_payment
+    const monthlyRate = calculateMonthlyRate(
+      loanAmount,
+      values.duration,
+      values.installment_type
     )
-    return parseFloat((monthlyRate * duration).toFixed(2))
+
+    try {
+      const response = await fetchClient({
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/loan`,
+        body: JSON.stringify({
+          amount: values.amount.toString(),
+          duration: values.duration.toString(),
+          installment_type: values.installment_type,
+          down_payment: values.down_payment.toString(),
+          interest_rate: INTEREST_RATE.toString(),
+          status: "unpaid",
+          installment: monthlyRate, // Przekazujemy obliczony installment tutaj
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok")
+      }
+
+      toast.success("Kredyt został wzięty pomyślnie.")
+      form.reset()
+    } catch (error) {
+      toast.error("Wystąpił błąd podczas brania kredytu.")
+    }
   }
 
   return (
     <Form {...form}>
-      <form>
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button variant="outline">
-              <FilePlus2 className="mr-2 size-4" />
-              Nowy kredyt
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <div className="mx-auto w-full max-w-lg">
-              <DrawerHeader>
-                <DrawerTitle>Nowy kredyt</DrawerTitle>
-                <DrawerDescription>
-                  Wypełnij formularz, aby złożyć wniosek o kredyt.
-                </DrawerDescription>
-              </DrawerHeader>
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="outline">
+            <FilePlus2 className="mr-2 size-4" />
+            Nowy kredyt
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <div className="mx-auto w-full max-w-lg">
+            <DrawerHeader>
+              <DrawerTitle>Nowy kredyt</DrawerTitle>
+              <DrawerDescription>
+                Wypełnij formularz, aby złożyć wniosek o kredyt.
+              </DrawerDescription>
+            </DrawerHeader>
 
-              <div className="p-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div className="space-y-4 p-4">
                 <Table>
                   <TableBody>
                     {dataTable.map((data, index) => (
@@ -174,10 +213,7 @@ export const NewLoanModal = () => {
                     </TableRow>
                   </TableFooter>
                 </Table>
-              </div>
 
-              <div className="space-y-4 p-4">
-                {/* Loan Amount */}
                 <FormField
                   control={form.control}
                   name="amount"
@@ -199,7 +235,6 @@ export const NewLoanModal = () => {
                   )}
                 />
 
-                {/* Duration */}
                 <FormField
                   control={form.control}
                   name="duration"
@@ -217,18 +252,13 @@ export const NewLoanModal = () => {
                       </FormControl>
                       <FormDescription>
                         {field.value}{" "}
-                        {field.value <= 1
-                          ? "miesiąc"
-                          : field.value > 1 && field.value < 5
-                            ? "miesiące"
-                            : "miesięcy"}
+                        {field.value === 1 ? "miesiąc" : "miesięcy"}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Down Payment */}
                 <FormField
                   control={form.control}
                   name="down_payment"
@@ -250,7 +280,6 @@ export const NewLoanModal = () => {
                   )}
                 />
 
-                {/* Loan Type */}
                 <FormField
                   control={form.control}
                   name="installment_type"
@@ -277,28 +306,23 @@ export const NewLoanModal = () => {
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormDescription></FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              <DrawerFooter className="flex w-full flex-row justify-end gap-2">
-                <DrawerClose asChild>
-                  <Button variant="outline">Anuluj</Button>
-                </DrawerClose>
 
-                <SubmitButton
-                  form={form}
-                  className="flex items-center space-x-2"
-                  loadingText="Wnioskowanie o kredyt..."
-                  buttonText="Złóż wniosek"
-                />
+              <DrawerFooter>
+                <DrawerClose asChild>
+                  <Button type="submit">Złóż wniosek</Button>
+                </DrawerClose>
               </DrawerFooter>
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </form>
+            </form>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </Form>
   )
 }
+
+export default NewLoanModal

@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 
 /**
- * @mixin Notification
+ * @mixin Loans
  */
 class LoanResource extends JsonResource
 {
@@ -22,7 +22,8 @@ class LoanResource extends JsonResource
             'interest_rate' => $this->interest_rate,
             'duration' => $this->duration,
             'status' => $this->status,
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at,
+            'installment' => $this->installment
         ];
     }
 }

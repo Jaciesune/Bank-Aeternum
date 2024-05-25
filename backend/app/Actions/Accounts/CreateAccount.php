@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Actions\Accounts;
 
 use App\Models\Account;
@@ -12,9 +13,9 @@ class CreateAccount
         string $balance,
         string $currency,
         string $type,
-        int $user_id // Dodajemy ID użytkownika
+        int $user_id
     ): Account {
-        // Tworzymy nowe konto
+
         $account = Account::create([
             'name' => $name,
             'account_number' => $account_number,
@@ -23,10 +24,10 @@ class CreateAccount
             'type' => $type,
         ]);
 
-        // Tworzymy wpis w tabeli account_user
+
         $createAccountUser = new CreateAccountUser();
         $createAccountUser($account->id, $user_id);
-        
+
 
         return $account;
     }

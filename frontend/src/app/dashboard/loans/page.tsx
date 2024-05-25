@@ -41,7 +41,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { NewLoanModal } from "./new-loan-modal"
+import NewLoanModal from "./new-loan-modal"
 
 export default function Page() {
   const [api, setApi] = useState<CarouselApi>()
@@ -72,7 +72,14 @@ export default function Page() {
                   <CarouselItem key={loan.id}>
                     <Card className="m-px flex flex-col gap-2">
                       <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>{loan.amount} PLN</CardTitle>
+                        <div>
+                          <CardTitle>{loan.amount} PLN</CardTitle>
+                          <CardTitle
+                            style={{ fontSize: "0.875rem", color: "lightgray" }}
+                          >
+                            Rata: {loan.installment} PLN
+                          </CardTitle>
+                        </div>
 
                         <DropdownMenu>
                           <DropdownMenuTrigger>

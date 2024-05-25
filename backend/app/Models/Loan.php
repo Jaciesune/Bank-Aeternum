@@ -23,6 +23,7 @@ class Loan extends Model
         'installment_id',
         'loan_amount',
         'installment_type',
+        'down_payment',
     ];
 
     protected $casts = [

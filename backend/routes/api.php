@@ -9,7 +9,7 @@ use App\Http\Controllers\Transaction\TransactionController;
 use App\Http\Controllers\TaxOffice\TaxOfficeController;
 
 
-Route::get("/check", function() {
+Route::get("/check", function () {
     return "very ok";
 });
 
@@ -38,6 +38,9 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('loan', [LoanController::class, 'index'])
         ->name('loan');
+
+    Route::post('/loan', [LoanController::class, 'create'])
+        ->name('loan.create');
 });
 
 Route::middleware(['auth:api', 'verified'])->group(function () {

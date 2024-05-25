@@ -35,6 +35,7 @@ export type Loan = {
   duration: number
   status: string
   created_at: string
+  installment: number
 }
 
 export type Status = "pending" | "completed" | "failed"
