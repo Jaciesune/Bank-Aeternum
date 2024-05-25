@@ -45,6 +45,7 @@ import {
 import { AccountsSelect } from "@/components/fields/accounts-select"
 
 import { symbols, taxOffices } from "./data"
+import { toast } from "sonner"
 
 type FormValues = {
   form_symbol: string
@@ -122,6 +123,8 @@ export function TaxTransferForm() {
       if (!response.ok) {
         throw response
       }
+      toast.success("Przelew został wykonany pomyślnie.")
+      form.reset()
     } catch (error) {
       throw new Error("An error has occurred during the request")
     }

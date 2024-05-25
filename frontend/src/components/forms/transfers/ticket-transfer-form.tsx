@@ -34,6 +34,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { AccountsSelect } from "@/components/fields/accounts-select"
+import { toast } from "sonner"
 
 type FormValues = {
   form_symbol: string
@@ -56,39 +57,41 @@ export function TicketTransferForm() {
       amount: "",
       date: new Date(),
       type_of_transfer: "standard",
+      name: "ticket",
     },
   })
 
   const { data: accounts } = useDataFetching<Account[]>("/api/account")
 
-  async function onSubmit(data: FormValues) {
+  async function onSubmit({
+    form_symbol,
+    tax_office_account_number,
+    pesel,
+    from_account,
+    amount,
+    date,
+  }: FormValues) {
     try {
       const response = await fetchClient({
         method: "POST",
-        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/ticket-transfer",
-        body: JSON.stringify(data),
+        url: process.env.NEXT_PUBLIC_BACKEND_API_URL + "/api/transfer",
+        body: JSON.stringify({
+          form_symbol,
+          to_account: tax_office_account_number,
+          pesel,
+          from_account,
+          amount,
+          date,
+          name: "ticket",
+        }),
       })
 
       if (!response.ok) {
         throw response
       }
+      toast.success("Przelew został wykonany pomyślnie.")
+      form.reset()
     } catch (error) {
-      if (error instanceof Response) {
-        const response = await error.json()
-
-        if (!response.errors) {
-          throw error
-        }
-
-        return Object.keys(response.errors).map((errorKey) => {
-          const input = document.querySelector(
-            `[name="${errorKey}"]`
-          ) as HTMLInputElement
-          input.setCustomValidity(response.errors[errorKey])
-          input.reportValidity()
-        })
-      }
-
       throw new Error("An error has occurred during the request")
     }
   }

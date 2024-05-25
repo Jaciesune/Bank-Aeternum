@@ -82,7 +82,7 @@ export default function NewAccountModal() {
                         <RadioGroup {...field}>
                           <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
-                              <RadioGroupItem value="checking" />
+                              <RadioGroupItem value="personal" />
                             </FormControl>
                             <FormLabel className="font-normal">
                               Konto osobiste
@@ -100,7 +100,7 @@ export default function NewAccountModal() {
 
                           <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
-                              <RadioGroupItem value="credit_card" />
+                              <RadioGroupItem value="youth" />
                             </FormControl>
                             <FormLabel className="font-normal">
                               Konto dla młodzieży
