@@ -85,7 +85,7 @@ export default function NewAccountModal() {
                               <RadioGroupItem value="checking" />
                             </FormControl>
                             <FormLabel className="font-normal">
-                              Rachunek bieżący
+                              Konto osobiste
                             </FormLabel>
                           </FormItem>
 
@@ -103,7 +103,7 @@ export default function NewAccountModal() {
                               <RadioGroupItem value="credit_card" />
                             </FormControl>
                             <FormLabel className="font-normal">
-                              Karta kredytowa
+                              Konto dla młodzieży
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>

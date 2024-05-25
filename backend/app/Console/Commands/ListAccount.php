@@ -16,7 +16,7 @@ class ListAccount extends Command
         $account = Account::all();
 
         $this->table(
-            ['ID', 'Name', 'Account Number', 'Balance', 'Currency'],
+            ['ID', 'Name', 'Account Number', 'Balance', 'Currency', 'Type'],
             $account->map(function (Account $account) {
                 return [
                     $account->id,
@@ -24,6 +24,7 @@ class ListAccount extends Command
                     $account->account_number,
                     $account->balance,
                     $account->currency,
+                    $account->type,
                 ];
             })
         );

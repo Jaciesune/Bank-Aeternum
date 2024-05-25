@@ -21,6 +21,7 @@ class AccountResource extends JsonResource
             'balance' => $this->balance,
             'account_number' => $this->account_number,
             'currency' => $this->currency,
+            'type' => $this->type,
         ];
     }
 }

@@ -1,9 +1,12 @@
+import { type } from "os"
+
 export type Account = {
   id: number
   name: string
   account_number: string
   balance: number
   currency: string
+  type: string
 }
 
 export type Symbol = {

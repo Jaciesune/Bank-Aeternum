@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('account_number')->unique()->index();
             $table->decimal('balance', 10, 2);
             $table->string('currency');
+            $table->enum('type', ['personal', 'savings', 'youth']);
         });
     }
 

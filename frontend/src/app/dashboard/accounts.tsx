@@ -39,6 +39,7 @@ type AccountProps = {
   setSelectedAccount: React.Dispatch<React.SetStateAction<Account | null>>
 }
 
+
 export default function Accounts({ setSelectedAccount }: AccountProps) {
   const [api, setApi] = useState<CarouselApi>()
   const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(api)
@@ -49,6 +50,20 @@ export default function Accounts({ setSelectedAccount }: AccountProps) {
       setSelectedAccount(accounts[selectedIndex])
     }
   }, [accounts, selectedIndex, setSelectedAccount])
+
+
+  function translateAccountType(type: string): string {
+    switch (type) {
+      case 'personal':
+        return 'Konto osobiste'
+      case 'savings':
+        return 'Konto oszczędnościowe'
+      case 'youth':
+        return 'Konto dla młodzieży'
+      default:
+        return type
+    }
+  }
 
   return (
     <Card className="col-span-3">
@@ -81,7 +96,12 @@ export default function Accounts({ setSelectedAccount }: AccountProps) {
                 <CarouselItem key={account.id}>
                   <Card className="m-px flex flex-col gap-2">
                     <CardHeader className="flex flex-row items-center justify-between">
-                      <CardTitle>{account.name}</CardTitle>
+                      <div>
+                        <CardTitle>{account.name}</CardTitle>
+                        <CardTitle style={{ fontSize: '0.875rem', color: 'lightgray' }}>
+                          {translateAccountType(account.type)}
+                        </CardTitle>
+                      </div>
 
                       <DropdownMenu>
                         <DropdownMenuTrigger>

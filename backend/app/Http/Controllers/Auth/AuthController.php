@@ -53,6 +53,7 @@ class AuthController extends Controller
             account_number: $account_number,
             balance: 0,
             currency: 'PLN',
+            type: 'personal',
         );
 
         $createAccountUser(

@@ -25,6 +25,7 @@ class AccountFactory extends Factory
             'account_number' => $account_number,
             'balance' => $this->faker->randomFloat(2, 0, 10000),
             'currency' => $this->faker->randomElement(["PLN", "EUR", "USD", "ZAR", "BLR", "PHP"]),
+            'type' => $this->faker->randomElement(["personal", "savings", "youth"]),
         ];
     }
 }
