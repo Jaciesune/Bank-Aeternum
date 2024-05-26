@@ -19,7 +19,7 @@ class NotificationFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->paragraph(),
+            'content' => $this->faker->paragraph(2),
             'updated_at' => $this->faker->dateTime(),
             'status' => $this->faker->randomElement(['read', 'unread']),
             'user_id' => User::factory(),

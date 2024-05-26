@@ -10,21 +10,50 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared('CREATE TRIGGER after_user_update
-            AFTER UPDATE ON users
-            FOR EACH ROW
-                INSERT INTO logs (user_id, action, description, created_at, updated_at)
-                VALUES (NEW.id, "update", CONCAT("User updated: ", OLD.email, " to ", NEW.email), NOW(), NOW())');
+        DB::unprepared('
+            CREATE TRIGGER after_user_update
+                AFTER UPDATE ON users
+                FOR EACH ROW
+                    INSERT INTO logs (user_id, action, description, created_at, updated_at)
+                    VALUES (NEW.id, "update", CONCAT("User updated: ", OLD.email, " to ", NEW.email), NOW(), NOW())');
 
         DB::unprepared('
-            CREATE PROCEDURE UpdateTransactionStatus(
-                IN transaction_id BIGINT,
-                IN new_status VARCHAR(255)
-            )
+            CREATE PROCEDURE GetProcedures()
             BEGIN
-                UPDATE transactions
-                SET status = new_status, updated_at = NOW()
-                WHERE id = transaction_id;
+                DECLARE result TEXT;
+                SELECT GROUP_CONCAT(CONCAT("Database: ", ROUTINE_SCHEMA, ", Procedure Name: ", ROUTINE_NAME) SEPARATOR "\n") INTO result
+                FROM INFORMATION_SCHEMA.ROUTINES
+                WHERE ROUTINE_TYPE = "PROCEDURE";
+                SELECT result AS "Procedures";
+            END
+        ');
+
+        DB::unprepared('
+            CREATE PROCEDURE GetUserNotifications(IN p_user_id INT)
+            BEGIN
+                SELECT 
+                    id AS notification_id,
+                    title,
+                    content,
+                    status,
+                    created_at,
+                    updated_at
+                FROM notifications
+                WHERE user_id = p_user_id
+                ORDER BY created_at DESC;
+            END
+        ');
+
+        DB::unprepared('
+            CREATE FUNCTION GetFunctions()
+            RETURNS TEXT
+            DETERMINISTIC
+            BEGIN
+                DECLARE result TEXT;
+                SELECT GROUP_CONCAT(CONCAT("Database: ", ROUTINE_SCHEMA, ", Function Name: ", ROUTINE_NAME) SEPARATOR "\n") INTO result
+                FROM INFORMATION_SCHEMA.ROUTINES
+                WHERE ROUTINE_TYPE = "FUNCTION";
+                RETURN result;
             END
         ');
 
@@ -44,8 +73,10 @@ return new class extends Migration
 
     public function down()
     {
-        DB::unprepared('DROP FUNCTION IF EXISTS GetTransactionStatus');
-        DB::unprepared('DROP TRIGGER IF EXISTS after_user_update');
-        DB::unprepared('DROP PROCEDURE IF EXISTS UpdateTransactionStatus');
+        DB::unprepared('DROP TRIGGER after_user_update');
+        DB::unprepared('DROP PROCEDURE GetUserNotifications');
+        DB::unprepared('DROP PROCEDURE GetProcedures');
+        DB::unprepared('DROP FUNCTION GetTransactionStatus');
+        DB::unprepared('DROP FUNCTION GetFunctions');
     }
 };
