@@ -4,51 +4,59 @@ services:
     env_file:
       - path: ./dockerenv
         required: true
-    network_mode: "service:backend"
+    network_mode: "host"
     volumes:
       - "./frontend:/app"
       - /app/node_modules
       - /app/.next
     ports:
       - 3000:3000
+
+  db:
+    image: mysql
+    restart: always
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      timeout: 20s
+      retries: 10
+      start_period: 2s
+      
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+
+  backend-init:
+    build: backend/
+    command: php artisan migrate:fresh --seed
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - "./backend:/var/www/html"
+    env_file:
+      - path: ./dockerenv
+        required: true
   
   backend:
     build: backend/
     depends_on:
       - backend-init
-
     env_file:
       - path: ./dockerenv
         required: true
-
     volumes:
       - "./backend:/var/www/html"
     ports:
       - 8000:8000
-      - 3000:3000
-  db:
-    image: mariadb
-    restart: always
-    environment:
-      MARIADB_ROOT_PASSWORD: password
-      MARIADB_DATABASE: laravel
-      MARIADB_USER: laravel
-      MARIADB_PASSWORD: laravel
-  backend-init:
-    build: backend/
-    command: php artisan migrate:fresh --seed
-    depends_on:
-      - db
-    volumes:
-      - "./backend:/var/www/html"
-    env_file:
-      - path: ./dockerenv
-        required: true
+
   worker:
     build: backend/
     command: php artisan queue:listen
     depends_on:
-      - backend-init
+       backend-init: 
+        condition: service_completed_successfully
     volumes:
       - "./backend:/var/www/html"
     env_file:

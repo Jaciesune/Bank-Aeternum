@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\logs;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
@@ -69,5 +70,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function accounts()
     {
         return $this->belongsToMany(Account::class);
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(logs::class);
     }
 }
