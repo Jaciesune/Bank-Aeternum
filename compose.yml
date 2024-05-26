@@ -20,6 +20,8 @@ services:
       timeout: 20s
       retries: 10
       start_period: 2s
+    ports:
+      - 3306:3306
       
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -57,6 +59,7 @@ services:
     depends_on:
        backend-init: 
         condition: service_completed_successfully
+        restart: true
     volumes:
       - "./backend:/var/www/html"
     env_file:

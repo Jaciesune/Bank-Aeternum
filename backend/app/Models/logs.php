@@ -13,8 +13,6 @@ class logs extends Model
         'user_id',
         'action',
         'description',
-        'ip_address',
-        'user_agent',
     ];
 
     public function user()
