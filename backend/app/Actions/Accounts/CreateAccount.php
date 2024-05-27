@@ -15,7 +15,6 @@ class CreateAccount
         string $type,
         int $user_id
     ): Account {
-
         $account = Account::create([
             'name' => $name,
             'account_number' => $account_number,
@@ -24,10 +23,8 @@ class CreateAccount
             'type' => $type,
         ]);
 
-
         $createAccountUser = new CreateAccountUser();
         $createAccountUser($account->id, $user_id);
-
 
         return $account;
     }

@@ -15,7 +15,8 @@ return new class extends Migration
                 AFTER UPDATE ON users
                 FOR EACH ROW
                     INSERT INTO logs (user_id, action, description, created_at, updated_at)
-                    VALUES (NEW.id, "update", CONCAT("User updated: ", OLD.email, " to ", NEW.email), NOW(), NOW())');
+                    VALUES (NEW.id, "update", CONCAT("User updated: ", OLD.email, " to ", NEW.email), NOW(), NOW())
+        ');
 
         DB::unprepared('
             CREATE PROCEDURE GetProcedures()

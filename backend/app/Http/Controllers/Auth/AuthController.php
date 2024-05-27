@@ -54,12 +54,13 @@ class AuthController extends Controller
             balance: 0,
             currency: 'PLN',
             type: 'personal',
-        );
-
-        $createAccountUser(
-            account_id: $account->id,
             user_id: $user->id,
         );
+
+        // $createAccountUser(
+        //     account_id: $account->id,
+        //     user_id: $user->id,
+        // );
 
         return response()->json([
             'status' => 'user-created',

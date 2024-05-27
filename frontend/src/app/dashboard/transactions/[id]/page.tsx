@@ -40,7 +40,7 @@ import {
 
 import TransactionDetails from "./transation-details"
 
-export const columns: ColumnDef<Transaction>[] = [
+const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "title",
     header: "Tytuł",

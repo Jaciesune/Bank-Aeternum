@@ -7,6 +7,10 @@
 
 - Create account: [mailtrap.io](https://mailtrap.io)
 
+## Run
+
+`docker compose up`
+
 ## License
 
 yes

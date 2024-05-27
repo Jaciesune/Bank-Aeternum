@@ -18,7 +18,7 @@ repository [here](https://github.com/avocado-media/laravel-jwt-rest-api).
 
 ## Frameworks & Libraries
 
-- UI: https://ui.shadcn.com/
+- UI: https://ui.shadcn.com/ (tailwindcss)
 - Next.js
 - react-hook-form
 
