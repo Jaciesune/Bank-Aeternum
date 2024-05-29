@@ -1,36 +1,35 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->morphs('transfer');
-            $table->decimal('amount', 10, 2);
-            $table->string('status');
-            $table->string('to_account')->index();
-            $table->string('from_account')->index();
-            $table->string('elixir');
-            $table->string('title');
-            $table->string('transaction_ip');
-            $table->string('currency');
-        });
+        DB::statement('
+            CREATE TABLE transactions (
+                id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL,
+                transfer_id BIGINT UNSIGNED NOT NULL,
+                transfer_type VARCHAR(255) NOT NULL,
+                amount DECIMAL(10, 2) NOT NULL,
+                status VARCHAR(255) NOT NULL,
+                to_account VARCHAR(255) NOT NULL,
+                from_account VARCHAR(255) NOT NULL,
+                elixir VARCHAR(255) NOT NULL,
+                title VARCHAR(255) NOT NULL,
+                transaction_ip VARCHAR(255) NOT NULL,
+                currency VARCHAR(255) NOT NULL,
+                INDEX (to_account),
+                INDEX (from_account)
+            )
+        ');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        DB::statement('DROP TABLE IF EXISTS transactions');
     }
 };

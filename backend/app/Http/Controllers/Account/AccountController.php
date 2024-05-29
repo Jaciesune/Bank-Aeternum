@@ -4,25 +4,35 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Accounts\AccountResource;
-use App\Models\Account;
-use App\Models\AccountUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Actions\Accounts\CreateAccount;
 use App\Services\AccountNumberGenerator;
 use App\Services\CurrencyExchange;
+use Illuminate\Support\Facades\DB;
 
 class AccountController extends Controller
 {
     public function show($account_id): AccountResource
     {
-        return new AccountResource(Account::find($account_id));
+        $account = DB::selectOne('SELECT * FROM accounts WHERE id = ?', [$account_id]);
+        if (!$account) {
+            abort(404, 'Account not found');
+        }
+        return new AccountResource((object)$account);
     }
 
     public function index(CurrencyExchange $exchange)
     {
-        $accounts = Auth::user()->accounts;
-        return AccountResource::collection($accounts);
+        $userId = Auth::id();
+        $accounts = DB::select('
+            SELECT accounts.* FROM accounts
+            INNER JOIN account_user ON accounts.id = account_user.account_id
+            WHERE account_user.user_id = ?', [$userId]);
+
+        return AccountResource::collection(collect($accounts)->map(function ($account) {
+            return (object)$account;
+        }));
     }
 
     public function create(Request $request, CreateAccount $createAccount)
@@ -30,23 +40,31 @@ class AccountController extends Controller
         $name = $request->input('name');
         $type = $request->input('type');
 
-        $user = Auth::user();
+        $userId = Auth::id();
+        $accountNumber = AccountNumberGenerator::generate();
 
         // Create the account
-        $account = Account::create([
-            'name' => $name,
-            'balance' => 0,
-            'account_number' => AccountNumberGenerator::generate(),
-            'currency' => 'PLN',
-            'type' => $type,
+        DB::insert('
+            INSERT INTO accounts (name, balance, account_number, currency, type, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, NOW(), NOW())', [
+            $name,
+            0,
+            $accountNumber,
+            'PLN',
+            $type,
         ]);
+
+        $accountId = DB::getPdo()->lastInsertId();
 
         // Link the account with the user
-        AccountUser::create([
-            'account_id' => $account->id,
-            'user_id' => $user->id,
+        DB::insert('
+            INSERT INTO account_user (account_id, user_id, created_at, updated_at)
+            VALUES (?, ?, NOW(), NOW())', [
+            $accountId,
+            $userId,
         ]);
 
-        return new AccountResource($account);
+        $account = DB::selectOne('SELECT * FROM accounts WHERE id = ?', [$accountId]);
+        return new AccountResource((object)$account);
     }
 }

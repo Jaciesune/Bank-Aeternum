@@ -1,32 +1,29 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('accounts', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name');
-            $table->string('account_number')->unique()->index();
-            $table->decimal('balance', 10, 2);
-            $table->string('currency');
-            $table->enum('type', ['personal', 'savings', 'youth']);
-        });
+        DB::statement('
+            CREATE TABLE accounts (
+                id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL,
+                name VARCHAR(255) NOT NULL,
+                account_number VARCHAR(255) UNIQUE NOT NULL,
+                balance DECIMAL(10, 2) NOT NULL,
+                currency VARCHAR(255) NOT NULL,
+                type ENUM("personal", "savings", "youth") NOT NULL,
+                INDEX (account_number)
+            )
+        ');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('accounts');
+        DB::statement('DROP TABLE IF EXISTS accounts');
     }
 };

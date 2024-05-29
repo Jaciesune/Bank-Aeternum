@@ -1,33 +1,29 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('addresses', function (Blueprint $table) {
-            $table->id();
-            $table->string('street');
-            $table->string('house_number');
-            $table->string('apartment_number')->nullable();
-            $table->string('postal_code');
-            $table->string('city');
-            $table->string('country');
-            $table->timestamps();
-        }); 
+        DB::statement('
+            CREATE TABLE addresses (
+                id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                street VARCHAR(255) NOT NULL,
+                house_number VARCHAR(255) NOT NULL,
+                apartment_number VARCHAR(255) NULL,
+                postal_code VARCHAR(255) NOT NULL,
+                city VARCHAR(255) NOT NULL,
+                country VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+        ');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('address');
+        DB::statement('DROP TABLE IF EXISTS addresses');
     }
 };

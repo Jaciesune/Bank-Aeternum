@@ -125,7 +125,7 @@ export default function TransactionsHistory({
               </TableBody>
             </Table>
           ) : (
-            <div className="text-xs text-muted-foreground">Brak transakcji</div>
+            <div className="text-muted-foreground text-xs">Brak transakcji</div>
           )}
         </CardContent>
       )}
