@@ -1,3 +1,7 @@
+# Github project
+
+- https://github.com/Jaciesune/Bank-Aeternum
+
 # Laravel + Next.js
 
 - frontend: https://github.com/avocado-media/nextjs-jwt-app-router
